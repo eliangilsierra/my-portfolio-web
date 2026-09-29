@@ -18,9 +18,9 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
-      - uses: actions/setup-node@v4
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
         with:
           node-version-file: .nvmrc
           cache: npm
@@ -29,5 +29,103 @@ jobs:
       - run: npm run format:check
       - run: npm run lint
       - run: npm run typecheck
-      - run: npm test
+
+      # Unused files, exports and dependencies.
+      - run: npm run knip
+
+      # Fails below the coverage thresholds configured in vitest.config.ts.
+      - run: npm run test:coverage
+
+      # Build as the deployment does, so the base path and site URL code paths are exercised.
       - run: npm run build
+        env:
+          VITE_BASE_PATH: /my-portfolio-web/
+          VITE_SITE_URL: https://example.github.io/my-portfolio-web
+
+      # The prerendered site must keep its promises: CSP, SEO tags, links, no third-party requests.
+      - run: node scripts/verify-build.mjs
+        env:
+          VITE_BASE_PATH: /my-portfolio-web/
+          VITE_SITE_URL: https://example.github.io/my-portfolio-web
+      - run: node scripts/check-bundle-size.mjs
+
+      # Known vulnerabilities in what ships to visitors.
+      - run: npm audit --omit=dev --audit-level=moderate
+
+  e2e:
+    name: End-to-end tests (Chromium)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      # Builds the site under /my-portfolio-web/, serves it like GitHub Pages and drives it with a
+      # real browser: accessibility (with contrast), CSP, language, theme, 404s and the contact form.
+      - run: npm run e2e
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: failure()
+        with:
+          name: playwright-report
+          path: |
+            playwright-report
+            test-results
+          retention-days: 7
+
+  lighthouse:
+    name: Lighthouse (performance, accessibility, best practices, SEO)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npm run build
+        env:
+          VITE_BASE_PATH: /my-portfolio-web/
+          VITE_SITE_URL: https://example.github.io/my-portfolio-web
+
+      # Fails below the score thresholds in lighthouserc.json; reports stay in the run's artifacts.
+      # Run through npx (pinned) rather than installed: its dependency tree carries known advisories
+      # that would otherwise appear in this project's `npm audit`.
+      - run: npx --yes @lhci/cli@0.15.1 autorun
+        env:
+          VITE_BASE_PATH: /my-portfolio-web/
+
+      - uses: actions/upload-artifact@043fb46d1a93c77aae656e7c1c64a875d1fc6a0a # v7.0.1
+        if: always()
+        with:
+          name: lighthouse-reports
+          path: .lighthouseci
+          retention-days: 7
+
+  commitlint:
+    name: Conventional commits
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@820762786026740c76f36085b0efc47a31fe5020 # v7.0.0
+        with:
+          node-version-file: .nvmrc
+          cache: npm
+
+      - run: npm ci
+      - run: npx commitlint --from ${{ github.event.pull_request.base.sha }} --to ${{ github.event.pull_request.head.sha }}

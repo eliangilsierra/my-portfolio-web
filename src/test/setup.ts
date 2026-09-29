@@ -1,13 +1,18 @@
 import '@testing-library/jest-dom/vitest';
 import { afterEach } from 'vitest';
-import { cleanup } from '@testing-library/react';
+import { cleanup, configure } from '@testing-library/react';
+
+// Routes are code-split, so the first render of a page waits for a dynamic import. The default
+// one-second wait is too tight when the whole suite is loading modules in parallel.
+configure({ asyncUtilTimeout: 5000 });
 
 afterEach(() => {
   cleanup();
   window.localStorage.clear();
 });
 
-// jsdom does not implement matchMedia, which next-themes and our locale detection rely on.
+// jsdom does not implement matchMedia, which the theme hook relies on.
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- lib.dom types matchMedia as always present
 if (!window.matchMedia) {
   window.matchMedia = (query: string): MediaQueryList =>
     ({
@@ -22,14 +27,5 @@ if (!window.matchMedia) {
     }) as MediaQueryList;
 }
 
-// jsdom does not implement these browser APIs used by framer-motion and the router.
+// jsdom does not implement scrolling.
 window.scrollTo = () => undefined;
-
-class IntersectionObserverStub {
-  observe = () => undefined;
-  unobserve = () => undefined;
-  disconnect = () => undefined;
-  takeRecords = () => [];
-}
-globalThis.IntersectionObserver ??=
-  IntersectionObserverStub as unknown as typeof IntersectionObserver;

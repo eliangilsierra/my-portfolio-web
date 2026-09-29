@@ -1,4 +1,9 @@
 import { z } from 'zod';
+// Relative imports with explicit extensions on purpose: this module is also loaded by the Vite config
+// (content validation plugin), where neither the `@/` alias nor extensionless resolution exists.
+import { CALLOUT_VARIANTS, type ContentBlock } from '../domain/content-block.ts';
+import type { Locale } from '../domain/locale.ts';
+import { PROJECT_TYPES } from '../domain/project.ts';
 
 /**
  * Content is authored once per entity with a translation for every supported locale.
@@ -14,23 +19,24 @@ const slugSchema = z
 const isoDateSchema = z.string().regex(/^\d{4}-\d{2}-\d{2}$/, 'date must be YYYY-MM-DD');
 
 /** Build a `{ es, en }` object schema so every locale is required. */
-const localized = <T extends z.ZodTypeAny>(schema: T) => z.object({ es: schema, en: schema });
+const localized = <T extends z.ZodType>(schema: T) =>
+  z.object({ es: schema, en: schema } satisfies Record<Locale, T>);
 
-export const contentBlockSchema = z.discriminatedUnion('type', [
+/** Typed against the domain union so schema and domain can never drift apart. */
+export const contentBlockSchema: z.ZodType<ContentBlock> = z.discriminatedUnion('type', [
   z.object({ type: z.literal('h2'), text: nonEmpty }),
   z.object({ type: z.literal('h3'), text: nonEmpty }),
   z.object({ type: z.literal('p'), text: nonEmpty }),
   z.object({ type: z.literal('ul'), items: z.array(nonEmpty).min(1) }),
   z.object({
     type: z.literal('callout'),
-    variant: z.enum(['info', 'warning', 'success']).default('info'),
+    variant: z.enum(CALLOUT_VARIANTS).default('info'),
     text: nonEmpty,
   }),
   z.object({ type: z.literal('code'), language: z.string().optional(), text: nonEmpty }),
 ]);
 
-export const PROJECT_TYPES = ['fullstack', 'frontend', 'backend', 'ml', 'iot'] as const;
-export const projectTypeSchema = z.enum(PROJECT_TYPES);
+const projectTypeSchema = z.enum(PROJECT_TYPES);
 
 const rawProjectSchema = z
   .object({
@@ -41,8 +47,8 @@ const rawProjectSchema = z
     featured: z.boolean().default(false),
     /** Path relative to `public/`. */
     coverImage: z.string().optional(),
-    repoUrl: z.string().url().nullable(),
-    demoUrl: z.string().url().nullable(),
+    repoUrl: z.url().nullable(),
+    demoUrl: z.url().nullable(),
     /** Paths relative to `public/`; alt texts live in the translations. */
     gallery: z.array(nonEmpty).default([]),
     translations: localized(
@@ -59,7 +65,7 @@ const rawProjectSchema = z
     for (const [locale, translation] of Object.entries(project.translations)) {
       if (translation.galleryAlts.length !== project.gallery.length) {
         ctx.addIssue({
-          code: z.ZodIssueCode.custom,
+          code: 'custom',
           path: ['translations', locale, 'galleryAlts'],
           message: `expected ${project.gallery.length} alt texts (one per gallery image)`,
         });
@@ -83,9 +89,9 @@ const rawPillSchema = z.object({
 const rawAboutSchema = z.object({
   name: nonEmpty,
   links: z.object({
-    github: z.string().url(),
-    linkedin: z.string().url(),
-    email: z.string().email(),
+    github: z.url(),
+    linkedin: z.url(),
+    email: z.email(),
   }),
   skills: z.object({
     frontend: z.array(nonEmpty),
@@ -107,8 +113,6 @@ export const rawContentSchema = z.object({
   about: rawAboutSchema,
 });
 
-export type ContentBlock = z.infer<typeof contentBlockSchema>;
-export type ProjectType = z.infer<typeof projectTypeSchema>;
 export type RawContent = z.infer<typeof rawContentSchema>;
 export type RawProject = RawContent['projects'][number];
 export type RawPill = RawContent['pills'][number];

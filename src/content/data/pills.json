@@ -12,18 +12,18 @@
             "type": "p",
             "text": "Al trabajar con Flyway en varios entornos, es importante que los scripts de inserción sean idempotentes: que puedan ejecutarse varias veces sin errores ni datos duplicados."
           },
-          { "type": "h3", "text": "El problema" },
+          { "type": "h2", "text": "El problema" },
           {
             "type": "p",
             "text": "Un insert típico como INSERT INTO users VALUES ('admin', 'admin@example.com') falla si el registro ya existe. En pipelines de CI/CD donde las migraciones pueden repetirse, eso se convierte en un problema."
           },
-          { "type": "h3", "text": "Solución 1: INSERT ... ON CONFLICT (PostgreSQL)" },
+          { "type": "h2", "text": "Solución 1: INSERT ... ON CONFLICT (PostgreSQL)" },
           {
             "type": "code",
             "language": "sql",
             "text": "INSERT INTO users (username, email)\nVALUES ('admin', 'admin@example.com')\nON CONFLICT (username) DO NOTHING;"
           },
-          { "type": "h3", "text": "Solución 2: WHERE NOT EXISTS (portable)" },
+          { "type": "h2", "text": "Solución 2: WHERE NOT EXISTS (portable)" },
           {
             "type": "code",
             "language": "sql",
@@ -34,7 +34,7 @@
             "variant": "info",
             "text": "Asegúrate de tener índices únicos en las columnas con las que compruebas la existencia. Garantizan la integridad y además mejoran el rendimiento."
           },
-          { "type": "h3", "text": "Buenas prácticas" },
+          { "type": "h2", "text": "Buenas prácticas" },
           {
             "type": "ul",
             "items": [
@@ -54,18 +54,18 @@
             "type": "p",
             "text": "When using Flyway across several environments, your insert scripts should be idempotent: safe to run multiple times without errors or duplicated data."
           },
-          { "type": "h3", "text": "The problem" },
+          { "type": "h2", "text": "The problem" },
           {
             "type": "p",
             "text": "A typical insert such as INSERT INTO users VALUES ('admin', 'admin@example.com') fails if the row already exists. In CI/CD pipelines where migrations can be replayed, that becomes a real problem."
           },
-          { "type": "h3", "text": "Solution 1: INSERT ... ON CONFLICT (PostgreSQL)" },
+          { "type": "h2", "text": "Solution 1: INSERT ... ON CONFLICT (PostgreSQL)" },
           {
             "type": "code",
             "language": "sql",
             "text": "INSERT INTO users (username, email)\nVALUES ('admin', 'admin@example.com')\nON CONFLICT (username) DO NOTHING;"
           },
-          { "type": "h3", "text": "Solution 2: WHERE NOT EXISTS (portable)" },
+          { "type": "h2", "text": "Solution 2: WHERE NOT EXISTS (portable)" },
           {
             "type": "code",
             "language": "sql",
@@ -76,7 +76,7 @@
             "variant": "info",
             "text": "Make sure the columns you use to check existence have unique indexes. They protect integrity and improve performance."
           },
-          { "type": "h3", "text": "Best practices" },
+          { "type": "h2", "text": "Best practices" },
           {
             "type": "ul",
             "items": [
@@ -103,12 +103,12 @@
             "type": "p",
             "text": "En aplicaciones Spring WebFlux la autenticación debe ser completamente no bloqueante. Los patrones clásicos de Spring Security pueden introducir bloqueos si no se adaptan."
           },
-          { "type": "h3", "text": "El desafío reactivo" },
+          { "type": "h2", "text": "El desafío reactivo" },
           {
             "type": "p",
             "text": "Con Mono<T> y Flux<T> hay que propagar el contexto de seguridad por la cadena reactiva sin bloquear hilos. ReactiveSecurityContextHolder es tu principal aliado."
           },
-          { "type": "h3", "text": "Implementación con JWT" },
+          { "type": "h2", "text": "Implementación con JWT" },
           {
             "type": "code",
             "language": "java",
@@ -119,7 +119,7 @@
             "variant": "warning",
             "text": "Nunca uses .block() en WebFlux. Anula el propósito del modelo reactivo y puede provocar bloqueos."
           },
-          { "type": "h3", "text": "Acceso al usuario en los controladores" },
+          { "type": "h2", "text": "Acceso al usuario en los controladores" },
           {
             "type": "code",
             "language": "java",
@@ -139,12 +139,12 @@
             "type": "p",
             "text": "In Spring WebFlux applications, authentication must be fully non-blocking. Classic Spring Security patterns can introduce blocking calls if they are not adapted."
           },
-          { "type": "h3", "text": "The reactive challenge" },
+          { "type": "h2", "text": "The reactive challenge" },
           {
             "type": "p",
             "text": "With Mono<T> and Flux<T> you need to propagate the security context through the reactive chain without blocking threads. ReactiveSecurityContextHolder is your main ally."
           },
-          { "type": "h3", "text": "Implementing it with JWT" },
+          { "type": "h2", "text": "Implementing it with JWT" },
           {
             "type": "code",
             "language": "java",
@@ -155,7 +155,7 @@
             "variant": "warning",
             "text": "Never call .block() in WebFlux. It defeats the purpose of the reactive model and can cause deadlocks."
           },
-          { "type": "h3", "text": "Reading the user in controllers" },
+          { "type": "h2", "text": "Reading the user in controllers" },
           {
             "type": "code",
             "language": "java",
@@ -182,13 +182,13 @@
             "type": "p",
             "text": "Las imágenes Docker de aplicaciones Java tienden a ser pesadas. Un Dockerfile típico con Maven y un JDK completo puede superar los 800 MB. Los builds multi-stage son la solución."
           },
-          { "type": "h3", "text": "Dockerfile optimizado" },
+          { "type": "h2", "text": "Dockerfile optimizado" },
           {
             "type": "code",
             "language": "dockerfile",
             "text": "# Stage 1: build\nFROM maven:3.9-eclipse-temurin-17 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn dependency:go-offline\nCOPY src ./src\nRUN mvn clean package -DskipTests\n\n# Stage 2: runtime\nFROM eclipse-temurin:17-jre-alpine\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]"
           },
-          { "type": "h3", "text": "Resultados" },
+          { "type": "h2", "text": "Resultados" },
           {
             "type": "ul",
             "items": [
@@ -203,7 +203,7 @@
             "variant": "success",
             "text": "Usar Alpine y un JRE en lugar de un JDK puede reducir la imagen en un 75% sin perder funcionalidad."
           },
-          { "type": "h3", "text": "Extra: caché de dependencias" },
+          { "type": "h2", "text": "Extra: caché de dependencias" },
           {
             "type": "p",
             "text": "Fíjate en que copiamos primero el pom.xml y ejecutamos dependency:go-offline. Así se crea una capa cacheada con todas las dependencias de Maven. Si solo cambias código fuente, Docker reutiliza esa capa y el build es mucho más rápido."
@@ -218,13 +218,13 @@
             "type": "p",
             "text": "Docker images for Java applications tend to be heavy. A typical Dockerfile with Maven and a full JDK can exceed 800 MB. Multi-stage builds are the answer."
           },
-          { "type": "h3", "text": "Optimised Dockerfile" },
+          { "type": "h2", "text": "Optimised Dockerfile" },
           {
             "type": "code",
             "language": "dockerfile",
             "text": "# Stage 1: build\nFROM maven:3.9-eclipse-temurin-17 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn dependency:go-offline\nCOPY src ./src\nRUN mvn clean package -DskipTests\n\n# Stage 2: runtime\nFROM eclipse-temurin:17-jre-alpine\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]"
           },
-          { "type": "h3", "text": "Results" },
+          { "type": "h2", "text": "Results" },
           {
             "type": "ul",
             "items": [
@@ -239,7 +239,7 @@
             "variant": "success",
             "text": "Using Alpine and a JRE instead of a JDK can shrink your image by 75% without losing functionality."
           },
-          { "type": "h3", "text": "Bonus: dependency caching" },
+          { "type": "h2", "text": "Bonus: dependency caching" },
           {
             "type": "p",
             "text": "Notice that we copy pom.xml first and run dependency:go-offline. That creates a cached layer with every Maven dependency. If you only change source code, Docker reuses that layer and the build is much faster."
@@ -261,7 +261,7 @@
             "type": "p",
             "text": "Cuando modelas datos con uniones discriminadas, quieres que añadir una variante nueva rompa la compilación en todos los sitios que no la tratan. El tipo never lo consigue."
           },
-          { "type": "h3", "text": "La función assertNever" },
+          { "type": "h2", "text": "La función assertNever" },
           {
             "type": "code",
             "language": "ts",
@@ -272,7 +272,7 @@
             "variant": "info",
             "text": "Si añades { kind: 'triangle' } a Shape, la línea del default deja de compilar hasta que trates el caso nuevo."
           },
-          { "type": "h3", "text": "Cuándo usarlo" },
+          { "type": "h2", "text": "Cuándo usarlo" },
           {
             "type": "ul",
             "items": [
@@ -291,7 +291,7 @@
             "type": "p",
             "text": "When you model data with discriminated unions, adding a new variant should break compilation everywhere it is not handled. The never type gives you exactly that."
           },
-          { "type": "h3", "text": "The assertNever helper" },
+          { "type": "h2", "text": "The assertNever helper" },
           {
             "type": "code",
             "language": "ts",
@@ -302,7 +302,7 @@
             "variant": "info",
             "text": "If you add { kind: 'triangle' } to Shape, the default line stops compiling until you handle the new case."
           },
-          { "type": "h3", "text": "When to use it" },
+          { "type": "h2", "text": "When to use it" },
           {
             "type": "ul",
             "items": [
@@ -338,7 +338,7 @@
             "variant": "warning",
             "text": "Usa npm ci en lugar de npm install: respeta el lockfile y falla si package.json y package-lock.json no coinciden."
           },
-          { "type": "h3", "text": "Consejos" },
+          { "type": "h2", "text": "Consejos" },
           {
             "type": "ul",
             "items": [
@@ -367,7 +367,7 @@
             "variant": "warning",
             "text": "Use npm ci instead of npm install: it respects the lockfile and fails if package.json and package-lock.json disagree."
           },
-          { "type": "h3", "text": "Tips" },
+          { "type": "h2", "text": "Tips" },
           {
             "type": "ul",
             "items": [

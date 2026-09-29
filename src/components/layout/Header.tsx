@@ -1,27 +1,21 @@
-import { AnimatePresence, motion } from 'framer-motion';
 import { Code2, Menu, X } from 'lucide-react';
 import { useEffect, useState } from 'react';
-import { Link, NavLink, useLocation } from 'react-router-dom';
+import { Link, NavLink, useLocation } from 'react-router';
 import { Button } from '@/components/ui/button';
 import { HEADER } from '@/config/constants';
-import { ROUTES } from '@/config/routes';
 import { SITE } from '@/config/site';
 import { useI18n } from '@/i18n/useI18n';
+import { useRoutes } from '@/i18n/useRoutes';
 import { cn } from '@/lib/utils';
 import { LanguageToggle } from './LanguageToggle';
 import { ThemeToggle } from './ThemeToggle';
 
-const NAV_ITEMS = [
-  { key: 'home', path: ROUTES.home },
-  { key: 'projects', path: ROUTES.projects },
-  { key: 'pills', path: ROUTES.pills },
-  { key: 'about', path: ROUTES.about },
-  { key: 'contact', path: ROUTES.contact },
-] as const;
+/** Keys are shared by the dictionary (`t.nav`) and the route table (`useRoutes`). */
+const NAV_ITEMS = ['home', 'projects', 'pills', 'about', 'contact'] as const;
 
 function navLinkClassName(isActive: boolean, layout: 'desktop' | 'mobile'): string {
   return cn(
-    'rounded-lg px-4 py-2 text-sm font-medium transition-all focus-ring',
+    'rounded-lg px-4 py-2 text-sm font-medium focus-ring transition-all',
     layout === 'mobile' && 'block',
     isActive
       ? 'bg-brand/10 text-brand'
@@ -31,9 +25,12 @@ function navLinkClassName(isActive: boolean, layout: 'desktop' | 'mobile'): stri
 
 export function Header() {
   const { t } = useI18n();
+  const routes = useRoutes();
   const { pathname } = useLocation();
   const [isScrolled, setIsScrolled] = useState(false);
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  // The menu is open only for the path it was opened on, so navigating closes it without an effect.
+  const [menuOpenPath, setMenuOpenPath] = useState<string | null>(null);
+  const isMenuOpen = menuOpenPath === pathname;
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > HEADER.scrolledThreshold);
@@ -43,21 +40,17 @@ export function Header() {
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
 
-  useEffect(() => {
-    setIsMenuOpen(false);
-  }, [pathname]);
-
   return (
     <header
       className={cn(
         'sticky top-0 z-50 w-full transition-all duration-300',
-        isScrolled ? 'glass shadow-lg' : 'bg-background/80 backdrop-blur-sm',
+        isScrolled ? 'shadow-lg glass' : 'bg-background/80 backdrop-blur-xs',
       )}
     >
       <nav aria-label={t.a11y.mainNavigation} className="container mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex h-16 items-center justify-between">
           <Link
-            to={ROUTES.home}
+            to={routes.home}
             className="group flex items-center space-x-2 rounded-lg focus-ring"
           >
             <Code2
@@ -68,11 +61,11 @@ export function Header() {
           </Link>
 
           <div className="hidden items-center space-x-1 md:flex">
-            {NAV_ITEMS.map(({ key, path }) => (
+            {NAV_ITEMS.map((key) => (
               <NavLink
                 key={key}
-                to={path}
-                end={path === ROUTES.home}
+                to={routes[key]}
+                end={key === 'home'}
                 className={({ isActive }) => navLinkClassName(isActive, 'desktop')}
               >
                 {t.nav[key]}
@@ -88,7 +81,7 @@ export function Header() {
               variant="ghost"
               size="icon"
               className="focus-ring md:hidden"
-              onClick={() => setIsMenuOpen((open) => !open)}
+              onClick={() => setMenuOpenPath(isMenuOpen ? null : pathname)}
               aria-label={t.a11y.toggleMenu}
               aria-expanded={isMenuOpen}
               aria-controls="mobile-menu"
@@ -102,31 +95,23 @@ export function Header() {
           </div>
         </div>
 
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              id="mobile-menu"
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: 'auto' }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.2 }}
-              className="overflow-hidden md:hidden"
-            >
-              <div className="space-y-1 py-4">
-                {NAV_ITEMS.map(({ key, path }) => (
-                  <NavLink
-                    key={key}
-                    to={path}
-                    end={path === ROUTES.home}
-                    className={({ isActive }) => navLinkClassName(isActive, 'mobile')}
-                  >
-                    {t.nav[key]}
-                  </NavLink>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {isMenuOpen && (
+          <div
+            id="mobile-menu"
+            className="reveal space-y-1 py-4 [--reveal-duration:0.2s] md:hidden"
+          >
+            {NAV_ITEMS.map((key) => (
+              <NavLink
+                key={key}
+                to={routes[key]}
+                end={key === 'home'}
+                className={({ isActive }) => navLinkClassName(isActive, 'mobile')}
+              >
+                {t.nav[key]}
+              </NavLink>
+            ))}
+          </div>
+        )}
       </nav>
     </header>
   );

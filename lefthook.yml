@@ -1,0 +1,14 @@
+# Local git hooks. CI runs the same checks, so hooks are a fast-feedback convenience.
+# Skip once with `LEFTHOOK=0 git commit ...` (do not make a habit of it).
+pre-commit:
+  parallel: true
+  jobs:
+    - name: lint-staged
+      run: npx --no-install lint-staged
+    - name: typecheck
+      run: npm run typecheck
+
+commit-msg:
+  jobs:
+    - name: conventional-commit
+      run: npx --no-install commitlint --edit {1}

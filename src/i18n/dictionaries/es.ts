@@ -41,6 +41,7 @@ export const es: Dictionary = {
     viewRepository: 'Ver repositorio',
     viewDemo: 'Ver demo',
     openInNewTab: '(se abre en una pestaña nueva)',
+    codeExample: 'Ejemplo de código',
     loading: 'Cargando…',
   },
 
@@ -154,6 +155,7 @@ export const es: Dictionary = {
       submit: 'Enviar mensaje',
       sending: 'Enviando…',
       openEmail: 'Abrir app de correo',
+      sendAnother: 'Enviar otro mensaje',
       requiredNote: '* Campos obligatorios',
     },
     validation: {
@@ -176,6 +178,12 @@ export const es: Dictionary = {
       subject: 'Contacto desde tu portafolio',
       body: 'Hola, me gustaría ponerme en contacto…',
     },
+  },
+
+  landing: {
+    welcome: 'Bienvenido',
+    chooseLanguage: 'Elige tu idioma para continuar.',
+    continueIn: 'Continuar en español',
   },
 
   notFound: {

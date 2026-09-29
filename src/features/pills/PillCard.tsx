@@ -1,34 +1,38 @@
 import { ArrowRight, Calendar } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { Reveal } from '@/components/motion/Reveal';
 import { staggerDelay } from '@/components/motion/stagger';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
-import { ROUTES } from '@/config/routes';
-import type { Pill } from '@/content/types';
+import type { Pill } from '@/domain/pill';
 import { useI18n } from '@/i18n/useI18n';
+import { useRoutes } from '@/i18n/useRoutes';
 import { formatDate } from '@/lib/format';
 
 interface PillCardProps {
   pill: Pill;
   index?: number;
+  /** Heading level of the card title: 2 under a page title, 3 under a section heading. */
+  headingLevel?: 2 | 3;
 }
 
-export function PillCard({ pill, index = 0 }: PillCardProps) {
+export function PillCard({ pill, index = 0, headingLevel = 3 }: PillCardProps) {
+  const Heading = `h${headingLevel}` as const;
   const { t, locale } = useI18n();
+  const routes = useRoutes();
 
   return (
     <Reveal inView delay={staggerDelay(index)} className="h-full">
-      <Card className="group glass flex h-full flex-col transition-all duration-300 hover:shadow-xl">
+      <Card className="group flex h-full flex-col glass transition-all duration-300 hover:shadow-xl">
         <CardHeader>
           <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
             <Calendar className="h-4 w-4" aria-hidden="true" />
             <time dateTime={pill.date}>{formatDate(pill.date, locale)}</time>
           </div>
-          <h3 className="font-heading text-xl font-bold transition-colors group-hover:text-brand">
+          <Heading className="font-heading text-xl font-bold transition-colors group-hover:text-brand">
             {pill.title}
-          </h3>
+          </Heading>
         </CardHeader>
 
         <CardContent className="flex-1">
@@ -47,7 +51,7 @@ export function PillCard({ pill, index = 0 }: PillCardProps) {
 
         <CardFooter>
           <Button asChild variant="ghost" size="sm" className="group/btn w-full">
-            <Link to={ROUTES.pill(pill.slug)}>
+            <Link to={routes.pill(pill.slug)}>
               {t.common.readMore}
               <span className="sr-only">: {pill.title}</span>
               <ArrowRight

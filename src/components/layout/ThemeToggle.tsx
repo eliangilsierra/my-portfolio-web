@@ -1,18 +1,20 @@
 import { Moon, Sun } from 'lucide-react';
-import { useTheme } from 'next-themes';
 import { Button } from '@/components/ui/button';
 import { useI18n } from '@/i18n/useI18n';
+import { useTheme } from '@/theme/useTheme';
 
 export function ThemeToggle() {
-  const { resolvedTheme, setTheme } = useTheme();
+  const { theme, setTheme } = useTheme();
   const { t } = useI18n();
-  const isDark = resolvedTheme === 'dark';
+  const isDark = theme === 'dark';
 
   return (
     <Button
       variant="ghost"
       size="icon"
-      onClick={() => setTheme(isDark ? 'light' : 'dark')}
+      onClick={() => {
+        setTheme(isDark ? 'light' : 'dark');
+      }}
       className="focus-ring"
       aria-label={isDark ? t.a11y.switchToLight : t.a11y.switchToDark}
     >

@@ -1,5 +1,5 @@
 import { createJsonContentRepository, rawContent } from './json-source';
-import { LOCALES } from '@/i18n/locale';
+import { LOCALES } from '@/domain/locale';
 
 describe.each(LOCALES)('content repository (%s)', (locale) => {
   const repository = createJsonContentRepository(locale);

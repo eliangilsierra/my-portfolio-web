@@ -1,4 +1,4 @@
-import type { ProjectType } from '@/content/types';
+import type { ProjectType } from '@/domain/project';
 
 /**
  * English is the source of truth for the dictionary shape.
@@ -45,6 +45,7 @@ export const en = {
     viewRepository: 'View repository',
     viewDemo: 'View demo',
     openInNewTab: '(opens in a new tab)',
+    codeExample: 'Code example',
     loading: 'Loading…',
   },
 
@@ -156,6 +157,7 @@ export const en = {
       submit: 'Send message',
       sending: 'Sending…',
       openEmail: 'Open email app',
+      sendAnother: 'Send another message',
       requiredNote: '* Required fields',
     },
     validation: {
@@ -179,6 +181,12 @@ export const en = {
       subject: 'Contact from your portfolio',
       body: 'Hi, I would like to get in touch…',
     },
+  },
+
+  landing: {
+    welcome: 'Welcome',
+    chooseLanguage: 'Choose your language to continue.',
+    continueIn: 'Continue in English',
   },
 
   notFound: {

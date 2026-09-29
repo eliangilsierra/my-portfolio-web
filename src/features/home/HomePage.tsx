@@ -1,24 +1,21 @@
 import { ArrowRight, Code2, Rocket, Sparkles } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Link } from 'react-router';
 import { SectionBadge } from '@/components/content/SectionBadge';
 import { Reveal } from '@/components/motion/Reveal';
 import { Button } from '@/components/ui/button';
 import { HOME } from '@/config/constants';
-import { ROUTES } from '@/config/routes';
-import { useContent } from '@/content/useContent';
-import { PillCard } from '@/features/pills/PillCard';
-import { ProjectCard } from '@/features/projects/ProjectCard';
-import { useDocumentMeta } from '@/hooks/useDocumentMeta';
+import { useAbout, usePills, useProjects } from '@/content/hooks';
+import { PillCard } from '@/features/pills';
+import { ProjectCard } from '@/features/projects';
 import { useI18n } from '@/i18n/useI18n';
+import { useRoutes } from '@/i18n/useRoutes';
 
 const HomePage = () => {
   const { t } = useI18n();
-  const content = useContent();
-  const { name, tagline, bio } = content.getAbout();
-  const featuredProjects = content.getFeaturedProjects(HOME.featuredProjectsCount);
-  const latestPills = content.getLatestPills(HOME.latestPillsCount);
-
-  useDocumentMeta(t.meta.home);
+  const routes = useRoutes();
+  const { name, tagline, bio } = useAbout();
+  const featuredProjects = useProjects().getFeaturedProjects(HOME.featuredProjectsCount);
+  const latestPills = usePills().getLatestPills(HOME.latestPillsCount);
 
   return (
     <>
@@ -31,8 +28,8 @@ const HomePage = () => {
 
         <div className="container mx-auto px-4 py-20 sm:px-6 sm:py-32 lg:px-8">
           <Reveal className="mx-auto max-w-4xl space-y-8 text-center">
-            <div className="glass inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium">
-              <Sparkles className="h-4 w-4 text-accent" aria-hidden="true" />
+            <div className="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-medium glass">
+              <Sparkles className="h-4 w-4 text-accent-text" aria-hidden="true" />
               <span>{t.home.availability}</span>
             </div>
 
@@ -46,7 +43,7 @@ const HomePage = () => {
 
             <div className="flex flex-col items-center justify-center gap-4 pt-4 sm:flex-row">
               <Button asChild size="lg" className="group">
-                <Link to={ROUTES.projects}>
+                <Link to={routes.projects}>
                   {t.home.viewProjects}
                   <ArrowRight
                     className="ml-2 h-5 w-5 transition-transform group-hover:translate-x-1"
@@ -56,7 +53,7 @@ const HomePage = () => {
               </Button>
 
               <Button asChild size="lg" variant="outline" className="group">
-                <Link to={ROUTES.contact}>
+                <Link to={routes.contact}>
                   {t.home.contactMe}
                   <Code2
                     className="ml-2 h-5 w-5 transition-transform group-hover:rotate-12"
@@ -89,7 +86,7 @@ const HomePage = () => {
 
           <Reveal inView delay={0.3} className="mt-12 text-center">
             <Button asChild variant="outline" size="lg">
-              <Link to={ROUTES.projects}>
+              <Link to={routes.projects}>
                 {t.home.featured.viewAll}
                 <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
               </Link>
@@ -118,7 +115,7 @@ const HomePage = () => {
 
           <Reveal inView delay={0.3} className="mt-12 text-center">
             <Button asChild variant="outline" size="lg">
-              <Link to={ROUTES.pills}>
+              <Link to={routes.pills}>
                 {t.home.latest.viewAll}
                 <ArrowRight className="ml-2 h-5 w-5" aria-hidden="true" />
               </Link>
@@ -130,4 +127,4 @@ const HomePage = () => {
   );
 };
 
-export default HomePage;
+export { HomePage };

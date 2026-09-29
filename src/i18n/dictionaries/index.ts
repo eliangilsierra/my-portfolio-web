@@ -1,4 +1,4 @@
-import type { Locale } from '../locale';
+import type { Locale } from '@/domain/locale';
 import { en, type Dictionary } from './en';
 import { es } from './es';
 

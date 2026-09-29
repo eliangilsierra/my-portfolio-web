@@ -1,16 +1,12 @@
-import { Github, Linkedin, Mail, type LucideIcon } from 'lucide-react';
-import { Link } from 'react-router-dom';
-import { ROUTES } from '@/config/routes';
-import { useContent } from '@/content/useContent';
+import { Mail } from 'lucide-react';
+import { Link } from 'react-router';
+import { GithubIcon, LinkedinIcon, type IconComponent } from '@/components/icons/BrandIcons';
+import { useAbout } from '@/content/hooks';
 import { useI18n } from '@/i18n/useI18n';
+import { useRoutes } from '@/i18n/useRoutes';
 import { buildMailto } from '@/lib/mailto';
 
-const QUICK_LINKS = [
-  { key: 'home', path: ROUTES.home },
-  { key: 'projects', path: ROUTES.projects },
-  { key: 'pills', path: ROUTES.pills },
-  { key: 'contact', path: ROUTES.contact },
-] as const;
+const QUICK_LINKS = ['home', 'projects', 'pills', 'contact'] as const;
 
 const SOCIAL_LINK_CLASSES =
   'rounded-lg p-1 text-muted-foreground transition-all hover:scale-110 hover:text-brand focus-ring';
@@ -18,7 +14,7 @@ const SOCIAL_LINK_CLASSES =
 interface SocialLinkProps {
   href: string;
   label: string;
-  icon: LucideIcon;
+  icon: IconComponent;
   external?: boolean;
 }
 
@@ -37,14 +33,15 @@ function SocialLink({ href, label, icon: Icon, external = true }: SocialLinkProp
 
 export function Footer() {
   const { t } = useI18n();
-  const { name, tagline, links } = useContent().getAbout();
+  const routes = useRoutes();
+  const { name, tagline, links } = useAbout();
   const mailto = buildMailto(links.email, {
     subject: t.contact.mailto.subject,
     body: t.contact.mailto.body,
   });
 
   return (
-    <footer className="border-t border-border bg-card/50 backdrop-blur-sm">
+    <footer className="border-t border-border bg-card/50 backdrop-blur-xs">
       <div className="container mx-auto px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-8 md:grid-cols-3">
           <div className="space-y-4">
@@ -53,14 +50,14 @@ export function Footer() {
           </div>
 
           <nav aria-label={t.footer.quickLinks} className="space-y-4">
-            <h2 className="font-heading text-sm font-semibold uppercase tracking-wider">
+            <h2 className="font-heading text-sm font-semibold tracking-wider uppercase">
               {t.footer.quickLinks}
             </h2>
             <ul className="space-y-2">
-              {QUICK_LINKS.map(({ key, path }) => (
+              {QUICK_LINKS.map((key) => (
                 <li key={key}>
                   <Link
-                    to={path}
+                    to={routes[key]}
                     className="text-sm text-muted-foreground transition-colors hover:text-brand"
                   >
                     {t.nav[key]}
@@ -71,12 +68,12 @@ export function Footer() {
           </nav>
 
           <div className="space-y-4">
-            <h2 className="font-heading text-sm font-semibold uppercase tracking-wider">
+            <h2 className="font-heading text-sm font-semibold tracking-wider uppercase">
               {t.footer.connect}
             </h2>
             <div className="flex space-x-4">
-              <SocialLink href={links.github} label="GitHub" icon={Github} />
-              <SocialLink href={links.linkedin} label="LinkedIn" icon={Linkedin} />
+              <SocialLink href={links.github} label="GitHub" icon={GithubIcon} />
+              <SocialLink href={links.linkedin} label="LinkedIn" icon={LinkedinIcon} />
               <SocialLink href={mailto} label={t.contact.form.email} icon={Mail} external={false} />
             </div>
           </div>

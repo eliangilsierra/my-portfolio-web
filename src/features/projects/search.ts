@@ -1,4 +1,4 @@
-import type { Project, ProjectType } from '@/content/types';
+import type { Project, ProjectType } from '@/domain/project';
 import { normalizeText } from '@/lib/text';
 
 export type ProjectTypeFilter = ProjectType | 'all';
