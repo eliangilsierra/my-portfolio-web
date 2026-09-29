@@ -5,9 +5,11 @@ import { readFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { gzipSync } from 'node:zlib';
 
+// Raised in ADR 21 for the motion system (GSAP, ScrollTrigger, SplitText, Lenis): measured
+// 227 kB JS and 12.2 kB CSS when it landed. The margin is small on purpose, so growth is a decision.
 const BUDGETS_KB = {
-  js: 165,
-  css: 12,
+  js: 235,
+  css: 14,
 };
 
 const clientDir = join(import.meta.dirname, '..', 'build', 'client');
