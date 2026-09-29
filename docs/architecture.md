@@ -151,8 +151,9 @@ Unit tests query by accessible role and name, so they double as accessibility ch
 
 ## Performance
 
-- Route chunks are split by the framework; the home page loads about 156 kB of gzip JavaScript and 8 kB of CSS (both budgeted).
-- Entrance animations are CSS (`animation-timeline: view()` where supported), not a JavaScript library.
+- Route chunks are split by the framework; the home page loads about 227 kB of gzip JavaScript and 12 kB of CSS (both budgeted, see ADR 21). GSAP, ScrollTrigger, SplitText and Lenis account for about 48 kB of it.
+- Motion follows [the design system](design.md#motion): CSS for everything in the first viewport (it plays before hydration), GSAP for scroll-linked motion, Lenis for wheel smoothing on desktop. The hero's WebGL field is a separate 3 kB chunk loaded when the browser is idle.
+- Scroll, pointer and resize handlers never set React state: they write to refs, data attributes or GSAP `quickTo` setters.
 - Fonts are self-hosted variable fonts; only the Latin subsets used above the fold are preloaded.
 - Lighthouse (mobile, simulated slow 4G, measured locally): Performance 91–92 with TBT 0 ms and CLS 0.
 
