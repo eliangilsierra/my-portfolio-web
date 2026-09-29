@@ -48,6 +48,18 @@ describe.each(LOCALES)('content repository (%s)', (locale) => {
     expect(repository.getAdjacentPills(pills.at(-1)!.slug).older).toBeUndefined();
     expect(repository.getAdjacentPills('missing')).toEqual({});
   });
+
+  it('resolves neighbouring projects in list order', () => {
+    const projects = repository.getProjects();
+
+    expect(repository.getAdjacentProjects(projects[0]!.slug)).toEqual({
+      previous: undefined,
+      next: projects[1],
+    });
+    expect(repository.getAdjacentProjects(projects[1]!.slug).previous).toBe(projects[0]);
+    expect(repository.getAdjacentProjects(projects.at(-1)!.slug).next).toBeUndefined();
+    expect(repository.getAdjacentProjects('missing')).toEqual({});
+  });
 });
 
 describe('content repository localisation', () => {

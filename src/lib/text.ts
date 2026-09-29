@@ -6,3 +6,10 @@ export function normalizeText(text: string): string {
     .toLowerCase()
     .trim();
 }
+
+/** A URL fragment for a heading: "Diseño de la API" becomes "diseno-de-la-api". */
+export function slugify(text: string): string {
+  return normalizeText(text)
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/^-+|-+$/g, '');
+}

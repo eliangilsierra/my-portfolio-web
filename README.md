@@ -15,11 +15,11 @@
 
 ## Screenshots
 
-> Add screenshots to `docs/screenshots/` and reference them here.
->
-> | Home          | Projects      | Project detail |
-> | ------------- | ------------- | -------------- |
-> | _placeholder_ | _placeholder_ | _placeholder_  |
+The "Blueprint Editorial" design, shown with the sample content ([design system](docs/design.md)).
+
+| Home (light) | Projects (light) | Case study (mobile, dark) |
+| --- | --- | --- |
+| ![Home page: the name set large over a schematic of the skill groups](docs/screenshots/home.png) | ![Projects page: filters and project sheets with blueprint illustrations](docs/screenshots/projects.png) | ![Case study on a phone in the dark theme](docs/screenshots/case-study-mobile-dark.png) |
 
 ## Why this project exists
 
@@ -44,7 +44,12 @@
 - **Knowledge pills**: short technical notes with code blocks, callouts and newer/older navigation.
 - **About page** with skills, certifications and a timeline.
 - **Contact form** built on React 19 form actions, with localized validation, running in demo mode until a provider is connected.
-- **Light / dark / system theme** applied before first paint, so there is no flash.
+- **A designed motion system**, with one owner per kind of motion:
+  - CSS draws the first viewport before hydration: a self-drawing system schematic and headlines that rise character by character.
+  - GSAP choreographs scroll reveals, the assembled capability map, filter re-ordering and pointer depth.
+  - Lenis smooths wheel scrolling, View Transitions morph a project card into its case study, and a WebGL graph paper follows the mouse.
+  - With reduced motion, all of it switches off ([design system](docs/design.md)).
+- **Light / dark / system theme** applied before first paint, so there is no flash. Switching themes spreads the new one from the button as a growing circle.
 - **Strict Content-Security-Policy** generated per page from the scripts it actually contains, no third-party requests, self-hosted fonts.
 - **Validated content**: schemas reject missing translations, duplicate slugs, malformed dates and URLs when the build or dev server starts.
 
@@ -54,11 +59,11 @@ These numbers come from the checks that run in CI; the Lighthouse figures were m
 
 | Area                   | Result                                                                                      |
 | ---------------------- | ------------------------------------------------------------------------------------------- |
-| Unit and integration   | 163 tests, ~99% line coverage (thresholds enforced)                                         |
-| End to end (real Chrome) | 114 tests: accessibility with axe (contrast included) in light and dark, both languages, desktop and mobile; CSP; no-JS rendering; 404s; forms |
-| Lighthouse (mobile)    | Performance 91–92, Accessibility 100, Best Practices 100, SEO 100                            |
-| First-load JavaScript  | ~156 kB gzip for the home page (budget enforced), CSS ~8 kB gzip                            |
-| Dependencies           | 13 runtime packages; `npm audit` reports 0 vulnerabilities                                  |
+| Unit and integration   | 194 tests, ~99% line coverage (thresholds enforced)                                         |
+| End to end (real Chrome) | 120 tests: accessibility with axe (contrast included) in light and dark, both languages, desktop and mobile; CSP; no-JS rendering; 404s; forms; menu focus; reduced motion |
+| Lighthouse (mobile)    | Performance 86–88, Accessibility 100, Best Practices 100, SEO 100                            |
+| First-load JavaScript  | ~227 kB gzip for the home page, including the motion system (budget enforced), CSS ~12 kB gzip |
+| Dependencies           | 16 runtime packages; `npm audit` reports 0 vulnerabilities                                  |
 | Type safety            | TypeScript strict, type-aware ESLint, architecture layers enforced by lint                  |
 
 ## Architecture overview
@@ -82,7 +87,8 @@ Read more in [docs/architecture.md](docs/architecture.md) and the decision log i
 | Area            | Choice                                                                                          |
 | --------------- | ----------------------------------------------------------------------------------------------- |
 | Language        | TypeScript 6 (`strict`, `noUncheckedIndexedAccess`)                                             |
-| UI              | React 19, Tailwind CSS 4, shadcn/ui-style primitives (Radix), CSS scroll-driven animations      |
+| UI              | React 19, Tailwind CSS 4, shadcn/ui-style primitives (Radix)                                    |
+| Motion          | CSS (first viewport), GSAP with ScrollTrigger, SplitText and Flip, Lenis, View Transitions, WebGL 2 |
 | Routing         | React Router 8 in framework mode, prerendered with `ssr: false`                                 |
 | Forms and data  | React 19 form actions, Zod 4                                                                    |
 | Build           | Vite 8 (Rolldown)                                                                               |

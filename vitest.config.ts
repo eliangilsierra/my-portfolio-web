@@ -14,6 +14,9 @@ export default defineConfig({
     environment: 'jsdom',
     globals: true,
     setupFiles: ['./src/test/setup.ts'],
+    // Many tests render whole pages, whose route modules load lazily; under a parallel run the
+    // first render of a page can take several seconds.
+    testTimeout: 15_000,
     css: false,
     // Playwright specs live in e2e/ and run with `npm run e2e`.
     exclude: [...configDefaults.exclude, 'e2e/**'],

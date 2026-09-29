@@ -29,3 +29,19 @@ if (!window.matchMedia) {
 
 // jsdom does not implement scrolling.
 window.scrollTo = () => undefined;
+
+// jsdom has no ResizeObserver, which the smooth scroller (Lenis) measures the page with.
+// eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- lib.dom types it as always present
+if (!window.ResizeObserver) {
+  window.ResizeObserver = class {
+    observe() {
+      return undefined;
+    }
+    unobserve() {
+      return undefined;
+    }
+    disconnect() {
+      return undefined;
+    }
+  };
+}

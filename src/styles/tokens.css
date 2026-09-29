@@ -1,0 +1,138 @@
+/*
+ * Design tokens for the "Blueprint Editorial" system (see docs/design.md).
+ * Runtime values live in :root / .dark; `@theme inline` exposes them as Tailwind utilities.
+ *
+ * Light is "blueprint paper": warm paper, near-black ink, violet as accent ink, cyan for annotations.
+ * Dark is "night cyanotype": deep ink blue, bone text, light violet and signal cyan.
+ */
+@theme inline {
+  --font-body: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-heading: 'Sora Variable', ui-sans-serif, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono Variable', ui-monospace, monospace;
+
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-brand: var(--brand);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-accent-text: var(--accent-text);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-success: var(--success);
+  --color-warning: var(--warning);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-border-strong: var(--border-strong);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+
+  --radius-lg: var(--radius);
+  --radius-md: var(--radius);
+  --radius-sm: calc(var(--radius) / 2);
+}
+
+/* Static scale tokens: fluid type, measured for the Sora/Inter pairing. */
+@theme {
+  --text-display: clamp(3.4rem, 12.5vw, 12.5rem);
+  --text-display--line-height: 0.86;
+  --text-display--letter-spacing: -0.055em;
+  --text-headline: clamp(2.6rem, 7vw, 7rem);
+  --text-headline--line-height: 0.92;
+  --text-headline--letter-spacing: -0.045em;
+  --text-title: clamp(2rem, 4.6vw, 4.25rem);
+  --text-title--line-height: 1;
+  --text-title--letter-spacing: -0.035em;
+  --text-lead: clamp(1.2rem, 1.9vw, 1.6rem);
+  --text-lead--line-height: 1.45;
+  --text-annotation: 0.72rem;
+  --text-annotation--line-height: 1.2;
+  --text-annotation--letter-spacing: 0.14em;
+
+  --ease-out-expo: cubic-bezier(0.16, 1, 0.3, 1);
+  --ease-in-out-cubic: cubic-bezier(0.65, 0, 0.35, 1);
+}
+
+:root {
+  --radius: 2px;
+
+  --background: hsl(40 23% 97%);
+  --foreground: hsl(240 16% 9%);
+
+  --brand: hsl(258 68% 47%); /* accent ink: text and strokes on paper */
+  --brand-foreground: hsl(0 0% 100%);
+  --accent: hsl(188 94% 52%); /* signal cyan: fills and strokes only */
+  --accent-foreground: hsl(240 16% 9%);
+  --accent-text: hsl(192 82% 27%); /* cyan legible as text on paper */
+
+  --card: hsl(40 25% 99%);
+  --card-foreground: hsl(240 16% 9%);
+
+  --primary: hsl(240 16% 9%); /* ink fill behind paper-coloured text */
+  --primary-foreground: hsl(40 23% 97%);
+  --secondary: hsl(40 14% 92%);
+  --secondary-foreground: hsl(240 16% 9%);
+  --muted: hsl(40 14% 92%);
+  --muted-foreground: hsl(240 6% 36%);
+  --destructive: hsl(0 72% 42%);
+  --destructive-foreground: hsl(0 0% 100%);
+  --success: hsl(152 62% 26%);
+  --warning: hsl(32 90% 30%);
+
+  --border: hsl(240 10% 84%);
+  --border-strong: hsl(240 12% 22%);
+  --input: hsl(240 10% 76%);
+  --ring: hsl(258 68% 47%);
+
+  /* Drawing sheet */
+  --grid-minor: hsl(240 30% 20% / 0.05);
+  --grid-major: hsl(258 40% 35% / 0.1);
+  --signal: linear-gradient(90deg, hsl(258 68% 50%), hsl(192 90% 40%));
+  --paper-shade: hsl(40 18% 94%);
+
+  color-scheme: light;
+}
+
+.dark {
+  --background: hsl(236 30% 7%);
+  --foreground: hsl(40 22% 92%);
+
+  --brand: hsl(258 95% 81%);
+  --brand-foreground: hsl(236 30% 7%);
+  --accent: hsl(188 94% 56%);
+  --accent-foreground: hsl(236 30% 7%);
+  --accent-text: hsl(188 94% 62%);
+
+  --card: hsl(236 26% 9.5%);
+  --card-foreground: hsl(40 22% 92%);
+
+  --primary: hsl(40 22% 92%);
+  --primary-foreground: hsl(236 30% 7%);
+  --secondary: hsl(236 20% 14%);
+  --secondary-foreground: hsl(40 22% 92%);
+  --muted: hsl(236 20% 14%);
+  --muted-foreground: hsl(236 12% 70%);
+  --destructive: hsl(0 80% 70%);
+  --destructive-foreground: hsl(236 30% 7%);
+  --success: hsl(152 60% 62%);
+  --warning: hsl(40 92% 64%);
+
+  --border: hsl(236 18% 19%);
+  --border-strong: hsl(40 18% 80%);
+  --input: hsl(236 16% 28%);
+  --ring: hsl(258 95% 81%);
+
+  --grid-minor: hsl(195 70% 80% / 0.045);
+  --grid-major: hsl(195 80% 75% / 0.09);
+  --signal: linear-gradient(90deg, hsl(258 95% 78%), hsl(188 94% 56%));
+  --paper-shade: hsl(236 26% 9%);
+
+  color-scheme: dark;
+}

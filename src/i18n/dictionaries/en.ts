@@ -39,6 +39,7 @@ export const en = {
     skipToContent: 'Skip to content',
     mainNavigation: 'Main navigation',
     toggleMenu: 'Toggle menu',
+    closeMenu: 'Close menu',
     switchToDark: 'Switch to dark mode',
     switchToLight: 'Switch to light mode',
     changeLanguage: 'Change language',
@@ -57,11 +58,19 @@ export const en = {
     contact: 'Contact',
   },
 
+  sheet: {
+    label: 'Sheet',
+    revision: 'Rev.',
+    endOfSheet: 'End of sheet',
+    scroll: 'Scroll',
+  },
+
   footer: {
     quickLinks: 'Quick links',
     connect: 'Connect',
     copyright: (year: number, name: string) => `© ${year} ${name}. All rights reserved.`,
     builtWith: 'Built with React, TypeScript and Tailwind CSS.',
+    backToTop: 'Back to top',
   },
 
   common: {
@@ -86,16 +95,27 @@ export const en = {
     viewProjects: 'View projects',
     contactMe: 'Get in touch',
     featured: {
-      badge: 'Featured projects',
+      badge: 'Selected work',
       title: 'Latest work',
       description: 'A selection of projects that reflect my full-stack experience.',
       viewAll: 'View all projects',
+    },
+    capabilities: {
+      badge: 'Capabilities',
+      title: 'From interface to infrastructure',
+      description: 'The tools I work with, grouped by the layer of the system they serve.',
     },
     latest: {
       badge: 'Knowledge pills',
       title: 'Latest posts',
       description: 'Reflections, learnings and day-to-day technical solutions.',
       viewAll: 'View all pills',
+    },
+    closing: {
+      badge: 'Next step',
+      title: "Let's build something",
+      cta: 'Start a conversation',
+      email: 'Write me an email',
     },
   },
 
@@ -110,6 +130,15 @@ export const en = {
     techStack: 'Tech stack',
     highlights: 'Highlights',
     gallery: 'Gallery',
+    details: 'Project data',
+    type: 'Type',
+    year: 'Year',
+    links: 'Links',
+    figure: 'Fig.',
+    caseStudy: 'Case study',
+    adjacent: 'More projects',
+    previous: 'Previous project',
+    next: 'Next project',
   },
 
   pills: {
@@ -122,20 +151,35 @@ export const en = {
     newer: 'Newer',
     older: 'Older',
     tags: 'Tags',
+    contents: 'Contents',
+    adjacent: 'More pills',
   },
 
   about: {
     badge: 'Profile',
     title: 'About me',
+    approach: 'Approach',
     skills: 'Skills',
+    skillsDescription: 'Grouped by the layer of the system they serve.',
     certifications: 'Certifications',
     timeline: 'Timeline',
+    timelineColumns: {
+      revision: 'Rev.',
+      year: 'Year',
+      change: 'Change',
+    },
     skillGroups: {
       frontend: 'Frontend',
       backend: 'Backend',
       devops: 'DevOps',
       dataAi: 'Data & AI',
     },
+  },
+
+  callouts: {
+    info: 'Note',
+    warning: 'Caution',
+    success: 'Result',
   },
 
   search: {
@@ -147,6 +191,8 @@ export const en = {
     badge: 'Contact',
     title: "Let's talk",
     description: 'Have a project in mind? I am available for collaborations and opportunities.',
+    channels: 'Direct channels',
+    formTitle: 'Send a message',
     form: {
       name: 'Name',
       namePlaceholder: 'Your name',

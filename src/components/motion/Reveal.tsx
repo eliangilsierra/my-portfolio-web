@@ -3,22 +3,21 @@ import { cn } from '@/lib/utils';
 
 interface RevealProps {
   children: ReactNode;
-  /** Delay in seconds before the load animation starts. */
+  /** Delay in seconds before the animation starts. */
   delay?: number;
-  /** Animate as the element scrolls into view instead of on load. */
-  inView?: boolean;
   className?: string;
 }
 
 /**
- * Fade-and-rise entrance implemented in CSS (see `.reveal` in index.css), so it costs no
- * JavaScript, is visible in prerendered HTML and honors `prefers-reduced-motion`.
+ * Fade-and-rise entrance on load, in CSS (see `.reveal` in styles/motion.css). It plays before
+ * hydration, is visible in prerendered HTML and honours `prefers-reduced-motion`. Use it for the
+ * first viewport; content further down uses `ScrollReveal`.
  */
-export function Reveal({ children, delay = 0, inView = false, className }: RevealProps) {
+export function Reveal({ children, delay = 0, className }: RevealProps) {
   const style = delay > 0 ? ({ '--reveal-delay': `${delay}s` } as CSSProperties) : undefined;
 
   return (
-    <div className={cn(inView ? 'reveal-in-view' : 'reveal', className)} style={style}>
+    <div className={cn('reveal', className)} style={style}>
       {children}
     </div>
   );

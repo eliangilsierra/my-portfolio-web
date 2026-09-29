@@ -15,7 +15,7 @@ Each record states the context, the decision and its consequences. Status values
 | 9   | React Router framework mode with static prerendering              | Accepted                  |
 | 10  | The language lives in the URL                                     | Accepted                  |
 | 11  | A small in-house theme with an inline head script                 | Accepted                  |
-| 12  | CSS scroll-driven animations instead of a motion library          | Accepted                  |
+| 12  | CSS scroll-driven animations instead of a motion library          | Superseded by 21          |
 | 13  | Content is validated at build time, not at runtime                | Accepted                  |
 | 14  | Clean-architecture layers enforced by lint                        | Accepted                  |
 | 15  | Contact form on React 19 form actions                             | Accepted                  |
@@ -24,6 +24,8 @@ Each record states the context, the decision and its consequences. Status values
 | 18  | Self-hosted fonts                                                 | Accepted                  |
 | 19  | Do not adopt the React Compiler (yet)                             | Rejected                  |
 | 20  | Lighthouse CI runs through `npx`, not as a dependency             | Accepted                  |
+| 21  | A motion system: CSS first viewport, GSAP and Lenis for scroll    | Accepted                  |
+| 22  | The "Blueprint Editorial" visual system                           | Accepted                  |
 
 ## ADR 1: Content as validated JSON with per-entity translations
 
@@ -119,7 +121,7 @@ Each record states the context, the decision and its consequences. Status values
 
 **Context.** The scaffold shipped 49 shadcn/ui components and their dependencies, but the app used seven. Unused code still needs auditing and slows installs.
 
-**Decision.** Keep only the primitives in use (`alert`, `badge`, `button`, `card`, `input`, `label`, `textarea`), written for React 19 (plain function components, `ref` as a prop, `data-slot`). Add others with the shadcn CLI when needed (`components.json` is kept for that).
+**Decision.** Keep only the primitives in use (`alert`, `badge`, `button`, `card`, `input`, `label`, `textarea`), written for React 19 (plain function components, `ref` as a prop, `data-slot`). Add others with the shadcn CLI when needed (`components.json` is kept for that). ADR 22 restyled them and removed `card`, which the redesign no longer uses.
 
 **Consequences.**
 
@@ -172,7 +174,7 @@ Each record states the context, the decision and its consequences. Status values
 
 ## ADR 12: CSS scroll-driven animations instead of a motion library
 
-**Status:** Accepted
+**Status:** Superseded by ADR 21
 
 **Context.** The only animation was a fade-and-rise on load and on scroll, plus a menu. A JavaScript animation library was about a quarter of the bundle, and starting elements at `opacity: 0` from JavaScript leaves prerendered content invisible until hydration.
 
@@ -282,3 +284,46 @@ Each record states the context, the decision and its consequences. Status values
 **Decision.** CI runs a pinned version through `npx --yes @lhci/cli@<version>`, keeping the project's own audit at zero and the tool's version explicit. Reports are kept as run artifacts instead of being uploaded to a public store.
 
 **Consequences.** The project's dependency audit stays meaningful; the tool is downloaded on each CI run.
+
+## ADR 21: A motion system: CSS for the first viewport, GSAP and Lenis for scroll
+
+**Status:** Accepted (supersedes ADR 12)
+
+**Context.** The redesign (ADR 22) makes motion part of the identity: headlines that rise out of their words, a schematic that draws itself, reveals choreographed with the scroll, a menu with an exit, list re-ordering and pointer-driven depth. ADR 12's CSS-only approach has no orchestration and no exit animations, and CSS scroll-driven animations are still behind a flag in stable Firefox. The owner chose visual ambition over first-load weight for this round. Motion for React, GSAP, React Spring, Three.js/React Three Fiber, Lenis and native APIs were compared on capability, React fit, size, accessibility, maintenance and overlap.
+
+**Decision.** One engine per job, so no two systems animate the same element:
+
+- **CSS** plays everything in the first viewport (split-character headlines, the hero schematic's strokes, sheet headers), because it runs before hydration and in prerendered HTML. It also owns hovers and focus. A global `prefers-reduced-motion` rule settles every CSS animation at its end state.
+- **GSAP** (`gsap`, `@gsap/react`, with ScrollTrigger, SplitText and Flip; free for commercial use since 2025) owns scroll choreography, line reveals, the menu timeline, list re-ordering and pointer motion. It is registered once in `components/motion/gsap.ts`; Flip registers itself in `useFlip` so it stays in the projects chunk. Scroll reveals only hide content that is below the fold at hydration, so nothing visible flashes, and they use opacity, never visibility, so keyboard focus can still reach hidden content.
+- **Lenis** smooths wheel scrolling on devices with a fine pointer, driven by GSAP's ticker and synchronised with ScrollTrigger. Touch devices and reduced motion keep native scrolling.
+- **View Transitions** (React Router's `viewTransition`) handle page changes and the card-to-case-study morph at no JavaScript cost. Browsers without the API simply navigate.
+- **WebGL 2** for the hero backdrop is a hand-written fragment shader loaded as a separate chunk when the browser is idle, skipped with reduced motion, `saveData` or no WebGL 2, and replaced by a CSS grid in all those cases.
+- Motion for React was rejected because it overlaps GSAP. Three.js and React Three Fiber were rejected because a single shader does not need a scene graph.
+
+Durations, easings and staggers live in `config/motion.ts` and are mirrored as CSS variables in `styles/motion.css`.
+
+**Consequences.**
+
+- (+) The motion vocabulary has one rhythm and one owner per element; every effect has a reduced-motion path and cleans up through `useGSAP` contexts.
+- (+) Prerendered pages stay complete without JavaScript: the e2e suite still reads them with scripts blocked.
+- (−) First-load JavaScript for the home page grew from about 156 kB to 227 kB gzip. The budget in `scripts/check-bundle-size.mjs` is now 235 kB JS and 14 kB CSS, a small margin on purpose. Moving the projects feature off the home chunk, or loading GSAP after the first paint, are the next levers if the weight has to come down.
+- (−) jsdom has no layout, so a few motion paths are verified in the browser suite instead of unit tests.
+
+## ADR 22: The "Blueprint Editorial" visual system
+
+**Status:** Accepted
+
+**Context.** The interface still looked like its scaffold: a centred hero over a radial gradient, frosted-glass cards with hover shadows, emoji icons and one fade-up animation. Three directions were explored: Blueprint Editorial (technical drawing sheets with Swiss editorial type), Editorial Monograph (a typographic magazine) and Signal/Terminal (dark, WebGL particles, command palette).
+
+**Decision.** Adopt Blueprint Editorial, chosen by the owner: every page is a numbered sheet of one drawing set. It keeps the site's identity (violet and cyan, Sora, Inter and JetBrains Mono, the bilingual content and the pills) and gives it a technical language that suits a full-stack, cloud and DevSecOps profile. The system is defined in `docs/design.md`:
+
+- Light theme is blueprint paper; dark theme is a night cyanotype. The violet-to-cyan gradient is kept only for the signal line.
+- The type scale is fluid, with Sora for display, Inter for reading and JetBrains Mono for annotations.
+- Corners are sharp, rules are hairlines, and there are no soft shadows or glass.
+- Shared drawing primitives live in `components/blueprint` (crop marks, section headings, title block, capability map, stamp).
+
+**Consequences.**
+
+- (+) The site reads as one designed object instead of a component kit, and the capability map and hero schematic are drawn from the real skill data, so nothing is invented.
+- (+) The seven shadcn primitives keep their APIs; `card` was removed because nothing uses it.
+- (−) The sample project illustrations were redrawn as cyanotype sheets to fit; real screenshots will need the same framing (a bordered sheet with crop marks) to sit well in the design.

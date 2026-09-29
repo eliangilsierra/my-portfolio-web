@@ -1,0 +1,196 @@
+/*
+ * Motion, CSS side. Mirrors src/config/motion.ts (durations and easings) so CSS and GSAP share
+ * one rhythm. CSS owns what must play before hydration (the first viewport) plus hovers and
+ * focus; GSAP owns everything tied to scroll (see docs/design.md, "Motion").
+ */
+:root {
+  --duration-instant: 120ms;
+  --duration-fast: 200ms;
+  --duration-base: 420ms;
+  --duration-slow: 800ms;
+  --duration-epic: 1200ms;
+  --stagger-char: 28ms;
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.25rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes rise-in {
+  from {
+    transform: translateY(105%);
+  }
+  to {
+    transform: none;
+  }
+}
+
+@keyframes fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes draw {
+  from {
+    stroke-dashoffset: 1;
+  }
+  to {
+    stroke-dashoffset: 0;
+  }
+}
+
+@keyframes grow-x {
+  from {
+    transform: scaleX(0);
+  }
+  to {
+    transform: scaleX(1);
+  }
+}
+
+@keyframes blink {
+  50% {
+    opacity: 0.25;
+  }
+}
+
+@layer components {
+  /* Plays once on load; tune with --reveal-delay / --reveal-duration. */
+  .reveal {
+    animation: reveal-up var(--reveal-duration, var(--duration-slow)) var(--ease-out-expo)
+      var(--reveal-delay, 0s) both;
+  }
+
+  /* Pre-split headline (SplitHeadline): each character rises out of a clipped word. */
+  .split-word {
+    display: inline-block;
+    overflow: clip;
+    overflow-clip-margin: 0.08em;
+    padding-bottom: 0.06em;
+    margin-bottom: -0.06em;
+    vertical-align: bottom;
+  }
+
+  .split-char {
+    display: inline-block;
+    animation: rise-in var(--duration-epic) var(--ease-out-expo)
+      calc(var(--split-delay, 0ms) + var(--i, 0) * var(--stagger-char)) both;
+  }
+
+  /* SVG strokes drawn on load. Paths need pathLength="1". */
+  .draw-on-load {
+    stroke-dasharray: 1;
+    animation: draw var(--duration-epic) var(--ease-in-out-cubic) var(--draw-delay, 0s) both;
+  }
+
+  .fade-on-load {
+    animation: fade-in var(--duration-slow) var(--ease-out-expo) var(--fade-delay, 0s) both;
+  }
+
+  .grow-on-load {
+    transform-origin: left center;
+    animation: grow-x var(--duration-epic) var(--ease-out-expo) var(--grow-delay, 0s) both;
+  }
+
+  .blink {
+    animation: blink 2.4s steps(2, jump-none) infinite;
+  }
+}
+
+/* --- Page transitions (React Router `viewTransition`) --- */
+@keyframes vt-out {
+  to {
+    opacity: 0;
+    transform: translateY(-1.5rem);
+  }
+}
+
+@keyframes vt-in {
+  from {
+    clip-path: inset(100% 0 0 0);
+  }
+  to {
+    clip-path: inset(0 0 0 0);
+  }
+}
+
+::view-transition-old(root) {
+  animation: vt-out var(--duration-base) var(--ease-in-out-cubic) both;
+}
+
+::view-transition-new(root) {
+  animation: vt-in var(--duration-slow) var(--ease-out-expo) both;
+}
+
+/* Shared elements (project cover and title) morph between pages. */
+::view-transition-group(*) {
+  animation-duration: var(--duration-slow);
+  animation-timing-function: var(--ease-out-expo);
+}
+
+/* Theme switch: the circular reveal is driven from ThemeToggle; the page animation steps aside. */
+.theme-transition::view-transition-old(root),
+.theme-transition::view-transition-new(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+/* The header is its own layer, so it stays put while the page changes underneath. */
+::view-transition-old(site-header),
+::view-transition-new(site-header) {
+  animation: none;
+}
+
+/* --- Lenis smooth scroll (from lenis/dist/lenis.css) --- */
+html.lenis,
+html.lenis body {
+  height: auto;
+}
+
+.lenis:not(.lenis-autoToggle).lenis-stopped {
+  overflow: clip;
+}
+
+.lenis [data-lenis-prevent] {
+  overscroll-behavior: contain;
+}
+
+.lenis.lenis-smooth iframe {
+  pointer-events: none;
+}
+
+/* --- Reduced motion: everything settles at its final state immediately --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  ::before,
+  ::after {
+    animation-duration: 0.01ms !important;
+    animation-delay: 0s !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0s !important;
+    scroll-behavior: auto !important;
+  }
+
+  /* Looping signal pulses (SMIL in the hero schematic) are ornament: drop them entirely. */
+  .signal-pulse {
+    display: none;
+  }
+
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    animation: none !important;
+  }
+}
