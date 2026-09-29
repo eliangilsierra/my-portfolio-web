@@ -1,10 +1,6 @@
-import { ArrowRight, Calendar } from 'lucide-react';
+import { ArrowUpRight } from 'lucide-react';
 import { Link } from 'react-router';
-import { Reveal } from '@/components/motion/Reveal';
-import { staggerDelay } from '@/components/motion/stagger';
 import { Badge } from '@/components/ui/badge';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card';
 import type { Pill } from '@/domain/pill';
 import { useI18n } from '@/i18n/useI18n';
 import { useRoutes } from '@/i18n/useRoutes';
@@ -12,56 +8,44 @@ import { formatDate } from '@/lib/format';
 
 interface PillCardProps {
   pill: Pill;
-  index?: number;
-  /** Heading level of the card title: 2 under a page title, 3 under a section heading. */
+  /** Heading level of the title: 2 under a page title, 3 under a section heading. */
   headingLevel?: 2 | 3;
 }
 
-export function PillCard({ pill, index = 0, headingLevel = 3 }: PillCardProps) {
+/** One entry of the field log: date, title (the whole row is the link), summary and tags. */
+export function PillCard({ pill, headingLevel = 3 }: PillCardProps) {
   const Heading = `h${headingLevel}` as const;
   const { t, locale } = useI18n();
   const routes = useRoutes();
 
   return (
-    <Reveal inView delay={staggerDelay(index)} className="h-full">
-      <Card className="group flex h-full flex-col glass transition-all duration-300 hover:shadow-xl">
-        <CardHeader>
-          <div className="mb-3 flex items-center gap-2 text-sm text-muted-foreground">
-            <Calendar className="h-4 w-4" aria-hidden="true" />
-            <time dateTime={pill.date}>{formatDate(pill.date, locale)}</time>
-          </div>
-          <Heading className="font-heading text-xl font-bold transition-colors group-hover:text-brand">
+    <article className="group relative grid grid-cols-12 gap-x-4 gap-y-4 border-b border-border py-8 md:py-10">
+      <p className="col-span-12 annotation text-muted-foreground md:col-span-2 md:pt-2">
+        <time dateTime={pill.date}>{formatDate(pill.date, locale)}</time>
+      </p>
+
+      <div className="col-span-12 md:col-span-7">
+        <Heading className="text-2xl leading-tight font-semibold tracking-tight transition-colors duration-300 group-hover:text-brand md:text-[2rem]">
+          <Link to={routes.pill(pill.slug)} viewTransition className="stretched-link focus-ring">
             {pill.title}
-          </Heading>
-        </CardHeader>
+          </Link>
+        </Heading>
+        <p className="mt-3 line-clamp-2 max-w-2xl text-muted-foreground">{pill.summary}</p>
+      </div>
 
-        <CardContent className="flex-1">
-          <p className="mb-4 line-clamp-3 text-sm text-muted-foreground">{pill.summary}</p>
-
-          <ul className="flex flex-wrap gap-2" aria-label={t.pills.tags}>
-            {pill.tags.map((tag) => (
-              <li key={tag}>
-                <Badge variant="secondary" className="text-xs">
-                  #{tag}
-                </Badge>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-
-        <CardFooter>
-          <Button asChild variant="ghost" size="sm" className="group/btn w-full">
-            <Link to={routes.pill(pill.slug)}>
-              {t.common.readMore}
-              <span className="sr-only">: {pill.title}</span>
-              <ArrowRight
-                className="ml-2 h-4 w-4 transition-transform group-hover/btn:translate-x-1"
-                aria-hidden="true"
-              />
-            </Link>
-          </Button>
-        </CardFooter>
-      </Card>
-    </Reveal>
+      <div className="col-span-12 flex items-start justify-between gap-4 md:col-span-3">
+        <ul className="flex flex-wrap gap-2" aria-label={t.pills.tags}>
+          {pill.tags.map((tag) => (
+            <li key={tag}>
+              <Badge variant="outline">#{tag}</Badge>
+            </li>
+          ))}
+        </ul>
+        <ArrowUpRight
+          aria-hidden="true"
+          className="size-5 shrink-0 text-muted-foreground transition-[translate,color] duration-300 group-hover:translate-x-0.5 group-hover:-translate-y-0.5 group-hover:text-brand"
+        />
+      </div>
+    </article>
   );
 }

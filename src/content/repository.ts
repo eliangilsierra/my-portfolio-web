@@ -8,6 +8,8 @@ export interface ProjectRepository {
   getProjects(): Project[];
   getProjectBySlug(slug: string): Project | undefined;
   getFeaturedProjects(limit: number): Project[];
+  /** Neighbours in list order (newest first): `previous` comes before, `next` after. */
+  getAdjacentProjects(slug: string): { previous?: Project; next?: Project };
 }
 
 export interface PillRepository {
@@ -80,6 +82,11 @@ export function createContentRepository(raw: RawContent, locale: Locale): Conten
     getProjects: () => projects,
     getProjectBySlug: (slug) => projects.find((project) => project.slug === slug),
     getFeaturedProjects: (limit) => projects.filter((project) => project.featured).slice(0, limit),
+    getAdjacentProjects: (slug) => {
+      const index = projects.findIndex((project) => project.slug === slug);
+      if (index === -1) return {};
+      return { previous: projects[index - 1], next: projects[index + 1] };
+    },
     getPills: () => pills,
     getPillBySlug: (slug) => pills.find((pill) => pill.slug === slug),
     getAdjacentPills: (slug) => {

@@ -43,7 +43,7 @@ describe('ContentRenderer', () => {
     expect(document.querySelector('img')).toBeNull();
   });
 
-  it('renders every callout variant', () => {
+  it('renders every callout variant as a labelled note, not a live alert', () => {
     renderWithProviders(
       <ContentRenderer
         content={[
@@ -54,7 +54,20 @@ describe('ContentRenderer', () => {
       />,
     );
 
-    expect(screen.getAllByRole('alert')).toHaveLength(3);
+    const notes = screen.getAllByRole('note');
+    expect(notes).toHaveLength(3);
+    expect(notes.map((note) => note.firstChild?.textContent)).toEqual([
+      'Note',
+      'Caution',
+      'Result',
+    ]);
+    expect(screen.queryByRole('alert')).toBeNull();
+  });
+
+  it('gives second-level headings an id, so a table of contents can link to them', () => {
+    renderWithProviders(<ContentRenderer content={[{ type: 'h2', text: 'Diseño de la API' }]} />);
+
+    expect(screen.getByRole('heading', { level: 2 })).toHaveAttribute('id', 'diseno-de-la-api');
   });
 
   it('fails loudly on a block type it does not know', () => {

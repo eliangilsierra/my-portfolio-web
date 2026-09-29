@@ -19,16 +19,16 @@ function SubmitButton() {
   const { t } = useI18n();
 
   return (
-    <Button type="submit" disabled={pending} className="group flex-1">
+    <Button type="submit" size="lg" disabled={pending} className="group flex-1">
       {pending ? (
         t.contact.form.sending
       ) : (
         <>
+          {t.contact.form.submit}
           <Send
-            className="mr-2 h-4 w-4 transition-transform group-hover:translate-x-1"
+            className="transition-transform duration-300 group-hover:translate-x-1"
             aria-hidden="true"
           />
-          {t.contact.form.submit}
         </>
       )}
     </Button>
@@ -63,11 +63,8 @@ export function ContactForm({ email, onReset }: ContactFormProps) {
   if (state.status === 'sent') {
     return (
       <div className="space-y-6">
-        <Alert
-          role="status"
-          className="border-green-500/50 bg-green-500/10 text-green-800 dark:text-green-300"
-        >
-          <CheckCircle2 className="h-5 w-5" aria-hidden="true" />
+        <Alert role="status" variant="success">
+          <CheckCircle2 className="size-5" aria-hidden="true" />
           <AlertDescription>{t.contact.success}</AlertDescription>
         </Alert>
         <Button variant="outline" onClick={onReset}>
@@ -104,13 +101,13 @@ export function ContactForm({ email, onReset }: ContactFormProps) {
   return (
     <form ref={formRef} action={formAction} noValidate className="space-y-6">
       <Alert>
-        <Info className="h-5 w-5" aria-hidden="true" />
+        <Info className="size-5" aria-hidden="true" />
         <AlertDescription>{t.contact.demoNotice}</AlertDescription>
       </Alert>
 
       {state.status === 'failed' && (
         <Alert variant="destructive" role="alert">
-          <TriangleAlert className="h-5 w-5" aria-hidden="true" />
+          <TriangleAlert className="size-5" aria-hidden="true" />
           <AlertDescription>{t.contact.error}</AlertDescription>
         </Alert>
       )}
@@ -150,15 +147,15 @@ export function ContactForm({ email, onReset }: ContactFormProps) {
       <div className="flex flex-col gap-4 sm:flex-row">
         <SubmitButton />
 
-        <Button type="button" variant="outline" asChild className="flex-1">
+        <Button type="button" size="lg" variant="outline" asChild className="flex-1">
           <a href={mailto}>
-            <Mail className="mr-2 h-4 w-4" aria-hidden="true" />
+            <Mail aria-hidden="true" />
             {t.contact.form.openEmail}
           </a>
         </Button>
       </div>
 
-      <p className="text-center text-sm text-muted-foreground">{t.contact.form.requiredNote}</p>
+      <p className="annotation text-muted-foreground">{t.contact.form.requiredNote}</p>
     </form>
   );
 }

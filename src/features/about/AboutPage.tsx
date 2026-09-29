@@ -1,105 +1,126 @@
-import { Award, Calendar, Code, User } from 'lucide-react';
+import { CapabilityMap } from '@/components/blueprint/CapabilityMap';
+import { SectionHeading } from '@/components/blueprint/SectionHeading';
+import { Stamp } from '@/components/blueprint/Stamp';
 import { PageHero } from '@/components/content/HeroSection';
-import { Reveal } from '@/components/motion/Reveal';
-import { Badge } from '@/components/ui/badge';
+import { RevealText } from '@/components/motion/RevealText';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { SHEETS } from '@/config/constants';
 import { useAbout } from '@/content/hooks';
-import type { SkillGroups } from '@/domain/about';
 import { useI18n } from '@/i18n/useI18n';
 
-const SKILL_GROUPS: { key: keyof SkillGroups; icon: string }[] = [
-  { key: 'frontend', icon: '🎨' },
-  { key: 'backend', icon: '⚙️' },
-  { key: 'devops', icon: '🚀' },
-  { key: 'dataAi', icon: '🤖' },
-];
+const pad = (value: number) => String(value).padStart(2, '0');
 
 const AboutPage = () => {
   const { t } = useI18n();
-  const { tagline, bio, skills, certifications, timeline } = useAbout();
+  const { tagline, bio, certifications, timeline } = useAbout();
 
   return (
     <>
-      <PageHero icon={User} badge={t.about.badge} title={t.about.title} description={tagline} />
+      <PageHero
+        sheet={SHEETS.about}
+        label={t.about.badge}
+        title={t.about.title}
+        description={tagline}
+      />
 
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-4xl">
-            <Reveal inView className="mb-12 rounded-2xl p-8 glass">
-              <p className="text-lg leading-relaxed text-foreground/90">{bio}</p>
-            </Reveal>
-
-            <Reveal inView delay={0.1} className="mb-12">
-              <div className="mb-6 flex items-center gap-2">
-                <Code className="h-6 w-6 text-brand" aria-hidden="true" />
-                <h2 className="font-heading text-3xl font-bold">{t.about.skills}</h2>
-              </div>
-
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
-                {SKILL_GROUPS.map(({ key, icon }) => (
-                  <div key={key} className="rounded-xl p-6 glass">
-                    <h3 className="mb-4 flex items-center gap-2 font-heading text-lg font-semibold">
-                      <span className="text-2xl" aria-hidden="true">
-                        {icon}
-                      </span>
-                      {t.about.skillGroups[key]}
-                    </h3>
-                    <ul className="flex flex-wrap gap-2">
-                      {skills[key].map((skill) => (
-                        <li key={skill}>
-                          <Badge variant="secondary" className="font-mono">
-                            {skill}
-                          </Badge>
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                ))}
-              </div>
-            </Reveal>
-
-            <Reveal inView delay={0.2} className="mb-12">
-              <div className="mb-6 flex items-center gap-2">
-                <Award className="h-6 w-6 text-accent-text" aria-hidden="true" />
-                <h2 className="font-heading text-3xl font-bold">{t.about.certifications}</h2>
-              </div>
-
-              <ul className="space-y-3 rounded-xl p-6 glass">
-                {certifications.map((certification) => (
-                  <li key={certification} className="flex items-start gap-3">
-                    <span className="mt-1 text-accent-text" aria-hidden="true">
-                      ✓
-                    </span>
-                    <span className="text-foreground/90">{certification}</span>
-                  </li>
-                ))}
-              </ul>
-            </Reveal>
-
-            <Reveal inView delay={0.3}>
-              <div className="mb-6 flex items-center gap-2">
-                <Calendar className="h-6 w-6 text-brand" aria-hidden="true" />
-                <h2 className="font-heading text-3xl font-bold">{t.about.timeline}</h2>
-              </div>
-
-              <ol className="space-y-6 rounded-xl p-6 glass">
-                {timeline.map((item, index) => (
-                  <li key={`${item.year}-${item.event}`} className="flex gap-4">
-                    <div className="flex flex-col items-center" aria-hidden="true">
-                      <div className="h-3 w-3 rounded-full bg-brand" />
-                      {index < timeline.length - 1 && (
-                        <div className="mt-2 w-0.5 flex-1 bg-border" />
-                      )}
-                    </div>
-                    <div className="flex-1 pb-6">
-                      <div className="mb-1 font-mono text-sm text-brand">{item.year}</div>
-                      <div className="text-foreground/90">{item.event}</div>
-                    </div>
-                  </li>
-                ))}
-              </ol>
-            </Reveal>
-          </div>
+      <section aria-labelledby="approach-title" className="sheet pt-24 md:pt-36">
+        <div className="grid gap-8 lg:grid-cols-12">
+          <h2 id="approach-title" className="annotation text-muted-foreground lg:col-span-2">
+            <span className="text-brand">A</span> / {t.about.approach}
+          </h2>
+          <RevealText className="font-heading text-[clamp(1.6rem,3.3vw,3rem)] leading-[1.18] font-light tracking-[-0.02em] lg:col-span-10">
+            {bio}
+          </RevealText>
         </div>
+      </section>
+
+      <section aria-labelledby="skills-title" className="sheet pt-24 md:pt-36">
+        <SectionHeading
+          index="B"
+          label={t.about.skills}
+          title={t.about.skills}
+          description={t.about.skillsDescription}
+          id="skills-title"
+        />
+        <CapabilityMap />
+      </section>
+
+      <section aria-labelledby="certifications-title" className="sheet pt-24 md:pt-36">
+        <SectionHeading
+          index="C"
+          label={t.about.certifications}
+          title={t.about.certifications}
+          id="certifications-title"
+        />
+        <ScrollReveal items="li">
+          <ul className="grid gap-px border border-border bg-border md:grid-cols-3">
+            {certifications.map((certification, index) => (
+              <li
+                key={certification}
+                className="flex min-h-56 flex-col justify-between gap-10 bg-background p-6 md:p-8"
+              >
+                <div className="flex items-start justify-between">
+                  <span className="annotation text-muted-foreground">C.{pad(index + 1)}</span>
+                  <Stamp />
+                </div>
+                <p className="font-heading text-xl leading-snug font-semibold tracking-tight md:text-2xl">
+                  {certification}
+                </p>
+              </li>
+            ))}
+          </ul>
+        </ScrollReveal>
+      </section>
+
+      <section aria-labelledby="timeline-title" className="sheet pt-24 md:pt-36">
+        <SectionHeading
+          index="D"
+          label={t.about.timeline}
+          title={t.about.timeline}
+          id="timeline-title"
+        />
+        <ScrollReveal items="tbody tr">
+          <table className="w-full border-collapse text-left">
+            <caption className="sr-only">{t.about.timeline}</caption>
+            <thead>
+              <tr className="border-y border-border-strong">
+                <th
+                  scope="col"
+                  className="w-20 py-3 pr-4 annotation font-medium text-muted-foreground md:w-32"
+                >
+                  {t.about.timelineColumns.revision}
+                </th>
+                <th
+                  scope="col"
+                  className="w-20 py-3 pr-4 annotation font-medium text-muted-foreground md:w-32"
+                >
+                  {t.about.timelineColumns.year}
+                </th>
+                <th scope="col" className="py-3 annotation font-medium text-muted-foreground">
+                  {t.about.timelineColumns.change}
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {timeline.map((item, index) => (
+                <tr
+                  key={`${item.year}-${item.event}`}
+                  className="group border-b border-border transition-colors hover:bg-card"
+                >
+                  <td className="py-5 pr-4 align-baseline annotation text-brand md:py-7">
+                    R{pad(timeline.length - index)}
+                  </td>
+                  <td className="py-5 pr-4 align-baseline font-mono text-sm md:py-7">
+                    {item.year}
+                  </td>
+                  <td className="py-5 align-baseline text-lg leading-snug md:py-7 md:text-xl">
+                    {item.event}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </ScrollReveal>
       </section>
     </>
   );

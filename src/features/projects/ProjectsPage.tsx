@@ -1,8 +1,10 @@
-import { Briefcase } from 'lucide-react';
 import { useMemo, useState } from 'react';
 import { FilterBar, type FilterOption } from '@/components/content/FilterBar';
 import { PageHero } from '@/components/content/HeroSection';
 import { Reveal } from '@/components/motion/Reveal';
+import { ScrollReveal } from '@/components/motion/ScrollReveal';
+import { useFlip } from '@/components/motion/useFlip';
+import { SHEETS } from '@/config/constants';
 import { PROJECT_TYPES } from '@/domain/project';
 import { useProjects } from '@/content/hooks';
 import { useI18n } from '@/i18n/useI18n';
@@ -26,47 +28,59 @@ const ProjectsPage = () => {
     label: t.projectTypes[value],
   }));
 
+  // Cards glide to their new places when the filters change.
+  const { scope, capture } = useFlip<HTMLUListElement>(`${type}|${query}`);
+
   return (
     <>
       <PageHero
-        icon={Briefcase}
-        badge={t.projects.badge}
+        sheet={SHEETS.projects}
+        label={t.projects.badge}
         title={t.projects.title}
         description={t.projects.description}
-        tone="muted"
       />
 
-      <section className="py-12">
-        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
-          <Reveal delay={0.2}>
-            <FilterBar
-              searchQuery={query}
-              onSearchChange={setQuery}
-              placeholder={t.projects.searchPlaceholder}
-              options={typeOptions}
-              selectedOption={type}
-              onOptionChange={setType}
-            />
-          </Reveal>
+      <section className="sheet pt-12 md:pt-16">
+        <Reveal delay={0.5}>
+          <FilterBar
+            searchQuery={query}
+            onSearchChange={(value) => {
+              capture();
+              setQuery(value);
+            }}
+            placeholder={t.projects.searchPlaceholder}
+            options={typeOptions}
+            selectedOption={type}
+            onOptionChange={(value) => {
+              capture();
+              setType(value);
+            }}
+          />
+        </Reveal>
 
-          <div className="mt-12">
-            {visibleProjects.length > 0 ? (
-              <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
-                {visibleProjects.map((project, index) => (
-                  <ProjectCard
-                    key={project.slug}
-                    project={project}
-                    index={index}
-                    headingLevel={2}
-                  />
+        <div className="mt-10 md:mt-14">
+          {visibleProjects.length > 0 ? (
+            <ScrollReveal items="[data-reveal-card]">
+              <ul ref={scope} className="grid grid-cols-1 gap-6 md:grid-cols-2 xl:grid-cols-3">
+                {visibleProjects.map((project) => (
+                  <li key={project.slug} data-reveal-card="">
+                    <ProjectCard
+                      project={project}
+                      index={projects.indexOf(project)}
+                      headingLevel={2}
+                    />
+                  </li>
                 ))}
-              </div>
-            ) : (
-              <p role="status" className="py-20 text-center text-xl text-muted-foreground">
-                {t.projects.empty}
-              </p>
-            )}
-          </div>
+              </ul>
+            </ScrollReveal>
+          ) : (
+            <p
+              role="status"
+              className="border-y border-border py-20 text-center text-lead text-muted-foreground"
+            >
+              {t.projects.empty}
+            </p>
+          )}
         </div>
       </section>
     </>
