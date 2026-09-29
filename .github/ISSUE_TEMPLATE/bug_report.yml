@@ -1,0 +1,38 @@
+name: Bug report
+description: Report something that is broken
+labels: [bug]
+body:
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: A clear description of the problem and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Go to '/projects'
+        2. Switch the language to Spanish
+        3. …
+    validations:
+      required: true
+  - type: dropdown
+    id: locale
+    attributes:
+      label: Language when it happened
+      options: [English, Spanish, Both, Not applicable]
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Browser and operating system
+      placeholder: Firefox 130 on Windows 11
+  - type: textarea
+    id: logs
+    attributes:
+      label: Console output or screenshots
+      description: Paste errors from the browser console or attach a screenshot.
