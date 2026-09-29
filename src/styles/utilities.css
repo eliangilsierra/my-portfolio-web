@@ -1,0 +1,86 @@
+/* Blueprint utilities: the drawing-sheet vocabulary shared by every page. */
+
+@utility focus-ring {
+  @apply focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-ring;
+}
+
+/* Page gutter shared by every section, so all content hangs off the same sheet margins. */
+@utility sheet {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 96rem;
+  padding-inline: clamp(1rem, 4vw, 3.5rem);
+}
+
+/* Mono annotation used for labels, sheet codes, dates and metadata. */
+@utility annotation {
+  font-family: var(--font-mono);
+  font-size: var(--text-annotation);
+  line-height: var(--text-annotation--line-height);
+  letter-spacing: var(--text-annotation--letter-spacing);
+  text-transform: uppercase;
+  font-weight: 500;
+}
+
+/* Graph-paper background: minor 16px and major 80px lines. */
+@utility bp-grid {
+  background-image:
+    linear-gradient(to right, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-major) 1px, transparent 1px),
+    linear-gradient(to right, var(--grid-minor) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-minor) 1px, transparent 1px);
+  background-size:
+    80px 80px,
+    80px 80px,
+    16px 16px,
+    16px 16px;
+  background-position: -1px -1px;
+}
+
+/* Grid that fades out towards the edges, for section backdrops. */
+@utility bp-grid-fade {
+  mask-image: radial-gradient(ellipse at 50% 40%, black 30%, transparent 75%);
+}
+
+/* Violet-to-cyan signal line: the only place the brand gradient appears. */
+@utility signal-line {
+  background: var(--signal);
+  height: 2px;
+}
+
+@utility signal-text {
+  background: var(--signal);
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  color: transparent;
+}
+
+/* Outlined display type, used for oversized background words. */
+@utility outline-text {
+  color: transparent;
+  -webkit-text-stroke: 1px var(--border-strong);
+}
+
+/* Link underline that draws from the left on hover or focus. */
+@utility draw-underline {
+  background-image: linear-gradient(currentColor, currentColor);
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 1px;
+  transition: background-size var(--duration-base, 420ms) var(--ease-out-expo);
+
+  &:hover,
+  &:focus-visible {
+    background-size: 100% 1px;
+  }
+}
+
+/* Stretches a link over its nearest positioned ancestor, so a whole row or card is clickable. */
+@utility stretched-link {
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+  }
+}

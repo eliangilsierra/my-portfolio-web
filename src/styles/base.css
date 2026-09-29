@@ -1,0 +1,60 @@
+@layer base {
+  /* Tailwind 4 no longer sets a default border colour; keep the design-system one. */
+  *,
+  ::after,
+  ::before,
+  ::backdrop,
+  ::file-selector-button {
+    border-color: var(--border);
+  }
+
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-rendering: optimizeLegibility;
+  }
+
+  body {
+    @apply bg-background font-body text-foreground antialiased;
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings:
+      'liga' 1,
+      'calt' 1;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-heading;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  code,
+  pre,
+  kbd {
+    @apply font-mono;
+  }
+
+  ::selection {
+    background: color-mix(in oklab, var(--brand) 22%, transparent);
+    color: var(--foreground);
+  }
+
+  /* Tailwind 4 buttons use the default cursor; restore the pointer for enabled controls. */
+  button:not(:disabled),
+  [role='button']:not(:disabled) {
+    cursor: pointer;
+  }
+
+  /* Anchored headings land below the sticky header. */
+  :target {
+    scroll-margin-top: 6rem;
+  }
+}
