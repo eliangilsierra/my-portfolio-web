@@ -1,23 +1,34 @@
-import type { Locale } from '@/i18n/locale';
+import type { Locale } from '@/domain/locale';
 import type { RawAbout, RawContent, RawPill, RawProject } from './schema';
-import type { About, Pill, Project } from './types';
+import type { About } from '@/domain/about';
+import type { Pill } from '@/domain/pill';
+import type { Project } from '@/domain/project';
 
-/**
- * Read-only access to portfolio content for one locale.
- * The UI depends on this interface, not on where the content comes from,
- * so swapping JSON for a CMS or API only requires a new implementation.
- */
-export interface ContentRepository {
+export interface ProjectRepository {
   getProjects(): Project[];
   getProjectBySlug(slug: string): Project | undefined;
   getFeaturedProjects(limit: number): Project[];
+}
+
+export interface PillRepository {
   getPills(): Pill[];
   getPillBySlug(slug: string): Pill | undefined;
   /** Neighbours in publication order: `newer` was published after, `older` before. */
   getAdjacentPills(slug: string): { newer?: Pill; older?: Pill };
   getLatestPills(limit: number): Pill[];
+}
+
+export interface AboutRepository {
   getAbout(): About;
 }
+
+/**
+ * Read-only access to portfolio content for one locale.
+ * The UI depends on the narrow interfaces above (through the `useProjects`, `usePills` and
+ * `useAbout` hooks), not on where the content comes from, so swapping JSON for a CMS or API only
+ * requires a new implementation of this combined type.
+ */
+export type ContentRepository = ProjectRepository & PillRepository & AboutRepository;
 
 function toProject(raw: RawProject, locale: Locale): Project {
   const { title, excerpt, highlights, content, galleryAlts } = raw.translations[locale];
