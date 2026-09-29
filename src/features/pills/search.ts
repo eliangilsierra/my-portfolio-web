@@ -1,4 +1,4 @@
-import type { Pill } from '@/content/types';
+import type { Pill } from '@/domain/pill';
 import { normalizeText } from '@/lib/text';
 
 export function filterPills(pills: Pill[], query: string): Pill[] {

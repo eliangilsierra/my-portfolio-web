@@ -3,9 +3,8 @@ import { useMemo, useState } from 'react';
 import { FilterBar, type FilterOption } from '@/components/content/FilterBar';
 import { PageHero } from '@/components/content/HeroSection';
 import { Reveal } from '@/components/motion/Reveal';
-import { PROJECT_TYPES } from '@/content/schema';
-import { useContent } from '@/content/useContent';
-import { useDocumentMeta } from '@/hooks/useDocumentMeta';
+import { PROJECT_TYPES } from '@/domain/project';
+import { useProjects } from '@/content/hooks';
 import { useI18n } from '@/i18n/useI18n';
 import { ProjectCard } from './ProjectCard';
 import { filterProjects, type ProjectTypeFilter } from './search';
@@ -14,18 +13,15 @@ const TYPE_FILTERS: ProjectTypeFilter[] = ['all', ...PROJECT_TYPES];
 
 const ProjectsPage = () => {
   const { t } = useI18n();
-  const content = useContent();
   const [query, setQuery] = useState('');
   const [type, setType] = useState<ProjectTypeFilter>('all');
 
-  useDocumentMeta(t.meta.projects);
-
-  const projects = content.getProjects();
+  const projects = useProjects().getProjects();
   const visibleProjects = useMemo(
     () => filterProjects(projects, query, type),
     [projects, query, type],
   );
-  const typeOptions: FilterOption[] = TYPE_FILTERS.map((value) => ({
+  const typeOptions: FilterOption<ProjectTypeFilter>[] = TYPE_FILTERS.map((value) => ({
     value,
     label: t.projectTypes[value],
   }));
@@ -49,7 +45,7 @@ const ProjectsPage = () => {
               placeholder={t.projects.searchPlaceholder}
               options={typeOptions}
               selectedOption={type}
-              onOptionChange={(value) => setType(value as ProjectTypeFilter)}
+              onOptionChange={setType}
             />
           </Reveal>
 
@@ -57,7 +53,12 @@ const ProjectsPage = () => {
             {visibleProjects.length > 0 ? (
               <div className="grid grid-cols-1 gap-6 md:grid-cols-2 lg:grid-cols-3">
                 {visibleProjects.map((project, index) => (
-                  <ProjectCard key={project.slug} project={project} index={index} />
+                  <ProjectCard
+                    key={project.slug}
+                    project={project}
+                    index={index}
+                    headingLevel={2}
+                  />
                 ))}
               </div>
             ) : (
@@ -72,4 +73,4 @@ const ProjectsPage = () => {
   );
 };
 
-export default ProjectsPage;
+export { ProjectsPage };

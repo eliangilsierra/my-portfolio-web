@@ -1,26 +1,22 @@
-import { ArrowLeft, Calendar, ExternalLink, Github } from 'lucide-react';
-import { Link, useParams } from 'react-router-dom';
+import { ArrowLeft, Calendar, ExternalLink } from 'lucide-react';
+import { Link, useParams } from 'react-router';
 import { ContentRenderer } from '@/components/content/ContentRenderer';
 import { HeroSection } from '@/components/content/HeroSection';
+import { GithubIcon } from '@/components/icons/BrandIcons';
 import { Reveal } from '@/components/motion/Reveal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { assetUrl } from '@/config/env';
-import { ROUTES } from '@/config/routes';
-import { useContent } from '@/content/useContent';
-import NotFoundPage from '@/features/not-found/NotFoundPage';
-import { useDocumentMeta } from '@/hooks/useDocumentMeta';
+import { useProjects } from '@/content/hooks';
+import { NotFoundPage } from '@/features/not-found';
 import { useI18n } from '@/i18n/useI18n';
+import { useRoutes } from '@/i18n/useRoutes';
 
 const ProjectDetailPage = () => {
   const { slug = '' } = useParams<{ slug: string }>();
   const { t } = useI18n();
-  const project = useContent().getProjectBySlug(slug);
-
-  useDocumentMeta({
-    title: project?.title ?? t.meta.notFound.title,
-    description: project?.excerpt ?? t.meta.notFound.description,
-  });
+  const routes = useRoutes();
+  const project = useProjects().getProjectBySlug(slug);
 
   if (!project) return <NotFoundPage />;
 
@@ -28,7 +24,7 @@ const ProjectDetailPage = () => {
     <>
       <HeroSection widthClassName="max-w-4xl">
         <Button asChild variant="ghost" size="sm" className="mb-6">
-          <Link to={ROUTES.projects}>
+          <Link to={routes.projects}>
             <ArrowLeft className="mr-2 h-4 w-4" aria-hidden="true" />
             {t.projects.backToList}
           </Link>
@@ -50,7 +46,7 @@ const ProjectDetailPage = () => {
           {project.repoUrl && (
             <Button asChild variant="outline" size="sm">
               <a href={project.repoUrl} target="_blank" rel="noopener noreferrer">
-                <Github className="mr-2 h-4 w-4" aria-hidden="true" />
+                <GithubIcon className="mr-2 h-4 w-4" aria-hidden="true" />
                 {t.common.repository}
                 <span className="sr-only"> {t.a11y.openInNewTab}</span>
               </a>
@@ -72,7 +68,7 @@ const ProjectDetailPage = () => {
       <section className="py-12">
         <div className="container mx-auto px-4 sm:px-6 lg:px-8">
           <Reveal delay={0.2} className="mx-auto max-w-4xl">
-            <div className="glass mb-12 rounded-2xl p-6">
+            <div className="mb-12 rounded-2xl p-6 glass">
               <h2 className="mb-4 font-heading text-lg font-semibold">{t.projects.techStack}</h2>
               <ul className="flex flex-wrap gap-2">
                 {project.tech.map((tech) => (
@@ -86,7 +82,7 @@ const ProjectDetailPage = () => {
             </div>
 
             {project.highlights.length > 0 && (
-              <div className="glass mb-12 rounded-2xl p-6">
+              <div className="mb-12 rounded-2xl p-6 glass">
                 <h2 className="mb-4 font-heading text-lg font-semibold">{t.projects.highlights}</h2>
                 <ul className="space-y-3">
                   {project.highlights.map((highlight) => (
@@ -101,7 +97,7 @@ const ProjectDetailPage = () => {
               </div>
             )}
 
-            <div className="glass mb-12 rounded-2xl p-8">
+            <div className="mb-12 rounded-2xl p-8 glass">
               <ContentRenderer content={project.content} />
             </div>
 
@@ -112,7 +108,7 @@ const ProjectDetailPage = () => {
                   {project.gallery.map((image) => (
                     <figure
                       key={image.src}
-                      className="glass aspect-video overflow-hidden rounded-xl"
+                      className="aspect-video overflow-hidden rounded-xl glass"
                     >
                       <img
                         src={assetUrl(image.src)}
@@ -134,4 +130,4 @@ const ProjectDetailPage = () => {
   );
 };
 
-export default ProjectDetailPage;
+export { ProjectDetailPage };
