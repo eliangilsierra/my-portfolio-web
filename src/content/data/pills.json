@@ -1,0 +1,383 @@
+[
+  {
+    "slug": "flyway-idempotent-inserts",
+    "date": "2025-08-01",
+    "tags": ["flyway", "sql", "migrations", "devops"],
+    "translations": {
+      "es": {
+        "title": "Flyway: patrones para inserts idempotentes",
+        "summary": "Cómo evitar colisiones en migraciones Flyway con ON CONFLICT y NOT EXISTS para garantizar idempotencia.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Al trabajar con Flyway en varios entornos, es importante que los scripts de inserción sean idempotentes: que puedan ejecutarse varias veces sin errores ni datos duplicados."
+          },
+          { "type": "h3", "text": "El problema" },
+          {
+            "type": "p",
+            "text": "Un insert típico como INSERT INTO users VALUES ('admin', 'admin@example.com') falla si el registro ya existe. En pipelines de CI/CD donde las migraciones pueden repetirse, eso se convierte en un problema."
+          },
+          { "type": "h3", "text": "Solución 1: INSERT ... ON CONFLICT (PostgreSQL)" },
+          {
+            "type": "code",
+            "language": "sql",
+            "text": "INSERT INTO users (username, email)\nVALUES ('admin', 'admin@example.com')\nON CONFLICT (username) DO NOTHING;"
+          },
+          { "type": "h3", "text": "Solución 2: WHERE NOT EXISTS (portable)" },
+          {
+            "type": "code",
+            "language": "sql",
+            "text": "INSERT INTO users (username, email)\nSELECT 'admin', 'admin@example.com'\nWHERE NOT EXISTS (\n  SELECT 1 FROM users WHERE username = 'admin'\n);"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Asegúrate de tener índices únicos en las columnas con las que compruebas la existencia. Garantizan la integridad y además mejoran el rendimiento."
+          },
+          { "type": "h3", "text": "Buenas prácticas" },
+          {
+            "type": "ul",
+            "items": [
+              "Usa claves únicas o primarias para impedir duplicados",
+              "Nombra las migraciones con versión y descripción clara: V001__create_users_table.sql",
+              "Prueba las migraciones en local antes de llevarlas a CI/CD",
+              "Usa migraciones repetibles (R__) para datos de configuración que cambian"
+            ]
+          }
+        ]
+      },
+      "en": {
+        "title": "Flyway: patterns for idempotent inserts",
+        "summary": "How to avoid collisions in Flyway migrations with ON CONFLICT and NOT EXISTS to guarantee idempotency.",
+        "content": [
+          {
+            "type": "p",
+            "text": "When using Flyway across several environments, your insert scripts should be idempotent: safe to run multiple times without errors or duplicated data."
+          },
+          { "type": "h3", "text": "The problem" },
+          {
+            "type": "p",
+            "text": "A typical insert such as INSERT INTO users VALUES ('admin', 'admin@example.com') fails if the row already exists. In CI/CD pipelines where migrations can be replayed, that becomes a real problem."
+          },
+          { "type": "h3", "text": "Solution 1: INSERT ... ON CONFLICT (PostgreSQL)" },
+          {
+            "type": "code",
+            "language": "sql",
+            "text": "INSERT INTO users (username, email)\nVALUES ('admin', 'admin@example.com')\nON CONFLICT (username) DO NOTHING;"
+          },
+          { "type": "h3", "text": "Solution 2: WHERE NOT EXISTS (portable)" },
+          {
+            "type": "code",
+            "language": "sql",
+            "text": "INSERT INTO users (username, email)\nSELECT 'admin', 'admin@example.com'\nWHERE NOT EXISTS (\n  SELECT 1 FROM users WHERE username = 'admin'\n);"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Make sure the columns you use to check existence have unique indexes. They protect integrity and improve performance."
+          },
+          { "type": "h3", "text": "Best practices" },
+          {
+            "type": "ul",
+            "items": [
+              "Use unique or primary keys to prevent duplicates",
+              "Name migrations with a version and a clear description: V001__create_users_table.sql",
+              "Test migrations locally before they reach CI/CD",
+              "Use repeatable migrations (R__) for configuration data that changes"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "spring-webflux-reactive-tokens",
+    "date": "2025-07-15",
+    "tags": ["spring", "webflux", "reactive", "security"],
+    "translations": {
+      "es": {
+        "title": "Spring WebFlux: manejo de tokens en peticiones reactivas",
+        "summary": "Estrategias para manejar tokens JWT en aplicaciones Spring WebFlux sin bloquear el event loop.",
+        "content": [
+          {
+            "type": "p",
+            "text": "En aplicaciones Spring WebFlux la autenticación debe ser completamente no bloqueante. Los patrones clásicos de Spring Security pueden introducir bloqueos si no se adaptan."
+          },
+          { "type": "h3", "text": "El desafío reactivo" },
+          {
+            "type": "p",
+            "text": "Con Mono<T> y Flux<T> hay que propagar el contexto de seguridad por la cadena reactiva sin bloquear hilos. ReactiveSecurityContextHolder es tu principal aliado."
+          },
+          { "type": "h3", "text": "Implementación con JWT" },
+          {
+            "type": "code",
+            "language": "java",
+            "text": "@Component\npublic class JwtAuthenticationFilter implements WebFilter {\n\n  @Override\n  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {\n    String token = extractToken(exchange.getRequest());\n\n    if (token == null) {\n      return chain.filter(exchange);\n    }\n\n    return validateTokenAsync(token)\n      .flatMap(authentication ->\n        chain.filter(exchange)\n          .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication))\n      );\n  }\n}"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Nunca uses .block() en WebFlux. Anula el propósito del modelo reactivo y puede provocar bloqueos."
+          },
+          { "type": "h3", "text": "Acceso al usuario en los controladores" },
+          {
+            "type": "code",
+            "language": "java",
+            "text": "@GetMapping(\"/profile\")\npublic Mono<UserProfile> getProfile() {\n  return ReactiveSecurityContextHolder.getContext()\n    .map(ctx -> (JwtAuthenticationToken) ctx.getAuthentication())\n    .flatMap(auth -> userService.findById(auth.getUserId()));\n}"
+          },
+          {
+            "type": "p",
+            "text": "Este enfoque mantiene todo el flujo reactivo y permite que WebFlux atienda miles de peticiones concurrentes sin consumir hilos."
+          }
+        ]
+      },
+      "en": {
+        "title": "Spring WebFlux: handling tokens in reactive requests",
+        "summary": "Strategies for handling JWT tokens in Spring WebFlux applications without blocking the event loop.",
+        "content": [
+          {
+            "type": "p",
+            "text": "In Spring WebFlux applications, authentication must be fully non-blocking. Classic Spring Security patterns can introduce blocking calls if they are not adapted."
+          },
+          { "type": "h3", "text": "The reactive challenge" },
+          {
+            "type": "p",
+            "text": "With Mono<T> and Flux<T> you need to propagate the security context through the reactive chain without blocking threads. ReactiveSecurityContextHolder is your main ally."
+          },
+          { "type": "h3", "text": "Implementing it with JWT" },
+          {
+            "type": "code",
+            "language": "java",
+            "text": "@Component\npublic class JwtAuthenticationFilter implements WebFilter {\n\n  @Override\n  public Mono<Void> filter(ServerWebExchange exchange, WebFilterChain chain) {\n    String token = extractToken(exchange.getRequest());\n\n    if (token == null) {\n      return chain.filter(exchange);\n    }\n\n    return validateTokenAsync(token)\n      .flatMap(authentication ->\n        chain.filter(exchange)\n          .contextWrite(ReactiveSecurityContextHolder.withAuthentication(authentication))\n      );\n  }\n}"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Never call .block() in WebFlux. It defeats the purpose of the reactive model and can cause deadlocks."
+          },
+          { "type": "h3", "text": "Reading the user in controllers" },
+          {
+            "type": "code",
+            "language": "java",
+            "text": "@GetMapping(\"/profile\")\npublic Mono<UserProfile> getProfile() {\n  return ReactiveSecurityContextHolder.getContext()\n    .map(ctx -> (JwtAuthenticationToken) ctx.getAuthentication())\n    .flatMap(auth -> userService.findById(auth.getUserId()));\n}"
+          },
+          {
+            "type": "p",
+            "text": "This approach keeps the whole flow reactive and lets WebFlux serve thousands of concurrent requests without tying up threads."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "docker-multistage-java",
+    "date": "2025-06-22",
+    "tags": ["docker", "java", "devops", "optimization"],
+    "translations": {
+      "es": {
+        "title": "Docker multi-stage para aplicaciones Java",
+        "summary": "Reduce tus imágenes Docker de Java de 800 MB a menos de 200 MB con builds multi-stage y un runtime más ligero.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Las imágenes Docker de aplicaciones Java tienden a ser pesadas. Un Dockerfile típico con Maven y un JDK completo puede superar los 800 MB. Los builds multi-stage son la solución."
+          },
+          { "type": "h3", "text": "Dockerfile optimizado" },
+          {
+            "type": "code",
+            "language": "dockerfile",
+            "text": "# Stage 1: build\nFROM maven:3.9-eclipse-temurin-17 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn dependency:go-offline\nCOPY src ./src\nRUN mvn clean package -DskipTests\n\n# Stage 2: runtime\nFROM eclipse-temurin:17-jre-alpine\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]"
+          },
+          { "type": "h3", "text": "Resultados" },
+          {
+            "type": "ul",
+            "items": [
+              "Imagen final de unos 180 MB (frente a 850 MB)",
+              "Tiempo de build similar o mejor gracias a la caché de capas",
+              "Menor superficie de ataque: solo hace falta el JRE en producción",
+              "Arranque más rápido por menor sobrecarga"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Usar Alpine y un JRE en lugar de un JDK puede reducir la imagen en un 75% sin perder funcionalidad."
+          },
+          { "type": "h3", "text": "Extra: caché de dependencias" },
+          {
+            "type": "p",
+            "text": "Fíjate en que copiamos primero el pom.xml y ejecutamos dependency:go-offline. Así se crea una capa cacheada con todas las dependencias de Maven. Si solo cambias código fuente, Docker reutiliza esa capa y el build es mucho más rápido."
+          }
+        ]
+      },
+      "en": {
+        "title": "Docker multi-stage builds for Java apps",
+        "summary": "Shrink your Java Docker images from 800 MB to under 200 MB with multi-stage builds and a lighter runtime.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Docker images for Java applications tend to be heavy. A typical Dockerfile with Maven and a full JDK can exceed 800 MB. Multi-stage builds are the answer."
+          },
+          { "type": "h3", "text": "Optimised Dockerfile" },
+          {
+            "type": "code",
+            "language": "dockerfile",
+            "text": "# Stage 1: build\nFROM maven:3.9-eclipse-temurin-17 AS build\nWORKDIR /app\nCOPY pom.xml .\nRUN mvn dependency:go-offline\nCOPY src ./src\nRUN mvn clean package -DskipTests\n\n# Stage 2: runtime\nFROM eclipse-temurin:17-jre-alpine\nWORKDIR /app\nCOPY --from=build /app/target/*.jar app.jar\nEXPOSE 8080\nENTRYPOINT [\"java\", \"-jar\", \"app.jar\"]"
+          },
+          { "type": "h3", "text": "Results" },
+          {
+            "type": "ul",
+            "items": [
+              "Final image of about 180 MB (versus 850 MB)",
+              "Build time similar or better thanks to layer caching",
+              "Smaller attack surface: only the JRE is needed in production",
+              "Faster start-up thanks to less overhead"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Using Alpine and a JRE instead of a JDK can shrink your image by 75% without losing functionality."
+          },
+          { "type": "h3", "text": "Bonus: dependency caching" },
+          {
+            "type": "p",
+            "text": "Notice that we copy pom.xml first and run dependency:go-offline. That creates a cached layer with every Maven dependency. If you only change source code, Docker reuses that layer and the build is much faster."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "typescript-exhaustive-switch",
+    "date": "2025-09-10",
+    "tags": ["typescript", "patterns", "type-safety"],
+    "translations": {
+      "es": {
+        "title": "TypeScript: comprobaciones exhaustivas con never",
+        "summary": "Haz que el compilador te avise cuando añadas una variante nueva y olvides tratarla en un switch.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Cuando modelas datos con uniones discriminadas, quieres que añadir una variante nueva rompa la compilación en todos los sitios que no la tratan. El tipo never lo consigue."
+          },
+          { "type": "h3", "text": "La función assertNever" },
+          {
+            "type": "code",
+            "language": "ts",
+            "text": "function assertNever(value: never): never {\n  throw new Error(`Unhandled variant: ${JSON.stringify(value)}`);\n}\n\ntype Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'square'; side: number };\n\nfunction area(shape: Shape): number {\n  switch (shape.kind) {\n    case 'circle':\n      return Math.PI * shape.radius ** 2;\n    case 'square':\n      return shape.side ** 2;\n    default:\n      return assertNever(shape);\n  }\n}"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Si añades { kind: 'triangle' } a Shape, la línea del default deja de compilar hasta que trates el caso nuevo."
+          },
+          { "type": "h3", "text": "Cuándo usarlo" },
+          {
+            "type": "ul",
+            "items": [
+              "Reducers y máquinas de estado",
+              "Renderizado de bloques de contenido",
+              "Mapeo de respuestas de API a modelos de dominio"
+            ]
+          }
+        ]
+      },
+      "en": {
+        "title": "TypeScript: exhaustive checks with never",
+        "summary": "Make the compiler tell you when you add a new variant and forget to handle it in a switch.",
+        "content": [
+          {
+            "type": "p",
+            "text": "When you model data with discriminated unions, adding a new variant should break compilation everywhere it is not handled. The never type gives you exactly that."
+          },
+          { "type": "h3", "text": "The assertNever helper" },
+          {
+            "type": "code",
+            "language": "ts",
+            "text": "function assertNever(value: never): never {\n  throw new Error(`Unhandled variant: ${JSON.stringify(value)}`);\n}\n\ntype Shape =\n  | { kind: 'circle'; radius: number }\n  | { kind: 'square'; side: number };\n\nfunction area(shape: Shape): number {\n  switch (shape.kind) {\n    case 'circle':\n      return Math.PI * shape.radius ** 2;\n    case 'square':\n      return shape.side ** 2;\n    default:\n      return assertNever(shape);\n  }\n}"
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "If you add { kind: 'triangle' } to Shape, the default line stops compiling until you handle the new case."
+          },
+          { "type": "h3", "text": "When to use it" },
+          {
+            "type": "ul",
+            "items": [
+              "Reducers and state machines",
+              "Rendering content blocks",
+              "Mapping API responses to domain models"
+            ]
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "github-actions-cache-node",
+    "date": "2025-08-20",
+    "tags": ["github-actions", "ci", "node", "devops"],
+    "translations": {
+      "es": {
+        "title": "GitHub Actions: caché de dependencias en Node",
+        "summary": "Acelera tus pipelines cacheando node_modules con una sola línea y sin invalidaciones sorpresa.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Instalar dependencias suele ser lo más lento de un pipeline de Node. La acción setup-node incluye caché integrada, así que no necesitas configurar actions/cache a mano."
+          },
+          {
+            "type": "code",
+            "language": "yaml",
+            "text": "- uses: actions/setup-node@v4\n  with:\n    node-version: 20\n    cache: npm\n- run: npm ci"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Usa npm ci en lugar de npm install: respeta el lockfile y falla si package.json y package-lock.json no coinciden."
+          },
+          { "type": "h3", "text": "Consejos" },
+          {
+            "type": "ul",
+            "items": [
+              "Versiona siempre el lockfile: la clave de caché se calcula a partir de él",
+              "Fija la versión de Node con .nvmrc para builds reproducibles",
+              "Ejecuta lint, tipos y tests en trabajos paralelos si el pipeline crece"
+            ]
+          }
+        ]
+      },
+      "en": {
+        "title": "GitHub Actions: caching Node dependencies",
+        "summary": "Speed up your pipelines by caching dependencies with a single line and no surprise invalidations.",
+        "content": [
+          {
+            "type": "p",
+            "text": "Installing dependencies is usually the slowest step of a Node pipeline. The setup-node action ships with built-in caching, so you do not need to configure actions/cache by hand."
+          },
+          {
+            "type": "code",
+            "language": "yaml",
+            "text": "- uses: actions/setup-node@v4\n  with:\n    node-version: 20\n    cache: npm\n- run: npm ci"
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Use npm ci instead of npm install: it respects the lockfile and fails if package.json and package-lock.json disagree."
+          },
+          { "type": "h3", "text": "Tips" },
+          {
+            "type": "ul",
+            "items": [
+              "Always commit the lockfile: the cache key is derived from it",
+              "Pin the Node version with .nvmrc for reproducible builds",
+              "Run lint, type checks and tests as parallel jobs if the pipeline grows"
+            ]
+          }
+        ]
+      }
+    }
+  }
+]

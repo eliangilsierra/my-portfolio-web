@@ -1,0 +1,462 @@
+[
+  {
+    "slug": "sivia-visual-inspection",
+    "type": "fullstack",
+    "tech": ["Java", "Spring Boot", "React", "PostgreSQL", "AWS", "Docker"],
+    "year": 2025,
+    "featured": true,
+    "coverImage": "images/projects/sivia-cover.svg",
+    "repoUrl": "https://github.com/your-username/sivia",
+    "demoUrl": "https://example.com/sivia-demo",
+    "gallery": ["images/projects/sivia-dashboard.svg", "images/projects/sivia-report.svg"],
+    "translations": {
+      "es": {
+        "title": "SIVIA — Inspección Visual con IA",
+        "excerpt": "Sistema de inspección visual automática con IA para reducir los tiempos de inspección en un 99%. Backend Java/Spring Boot, frontend React y PostgreSQL en RDS.",
+        "highlights": [
+          "Redujo el tiempo de inspección de 8 horas a 5 minutos",
+          "Pipeline CI/CD automatizado con Jenkins y Docker",
+          "Trazabilidad completa de cada inspección",
+          "API REST escalable con Spring WebFlux"
+        ],
+        "galleryAlts": [
+          "Panel principal con el estado de las inspecciones en curso",
+          "Informe de inspección con defectos detectados"
+        ],
+        "content": [
+          { "type": "h2", "text": "Resumen del proyecto" },
+          {
+            "type": "p",
+            "text": "SIVIA es un sistema de inspección visual automatizada que usa inteligencia artificial para detectar defectos en componentes industriales. Procesa imágenes en tiempo real y genera informes detallados, reduciendo de forma drástica el tiempo de inspección manual."
+          },
+          { "type": "h3", "text": "Arquitectura del sistema" },
+          {
+            "type": "ul",
+            "items": [
+              "API Gateway con Spring Cloud Gateway",
+              "Microservicios en Java 17 con Spring Boot 3",
+              "Frontend React con TypeScript y Redux",
+              "PostgreSQL en AWS RDS",
+              "Almacenamiento de imágenes en S3",
+              "Modelos de visión por computador para la detección"
+            ]
+          },
+          { "type": "h3", "text": "Desafíos técnicos" },
+          {
+            "type": "p",
+            "text": "El principal desafío fue optimizar el procesamiento de imágenes de alta resolución. Se implementó una cola con RabbitMQ y procesamiento asíncrono que permitió escalar horizontalmente los workers de IA."
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Dato de ejemplo: el sistema procesa más de 10.000 imágenes al día con una precisión del 98,5% en la detección de defectos."
+          },
+          { "type": "h3", "text": "Resultados" },
+          {
+            "type": "p",
+            "text": "Desplegado en tres plantas industriales, con un promedio de 2.500 componentes al día y un tiempo de respuesta medio de 300 ms por imagen."
+          }
+        ]
+      },
+      "en": {
+        "title": "SIVIA — AI Visual Inspection",
+        "excerpt": "Automated visual inspection system that uses AI to cut inspection time by 99%. Java/Spring Boot backend, React frontend and PostgreSQL on RDS.",
+        "highlights": [
+          "Cut inspection time from 8 hours to 5 minutes",
+          "Automated CI/CD pipeline with Jenkins and Docker",
+          "Full traceability for every inspection",
+          "Scalable REST API built with Spring WebFlux"
+        ],
+        "galleryAlts": [
+          "Main dashboard showing the status of ongoing inspections",
+          "Inspection report listing the detected defects"
+        ],
+        "content": [
+          { "type": "h2", "text": "Project overview" },
+          {
+            "type": "p",
+            "text": "SIVIA is an automated visual inspection system that uses artificial intelligence to detect defects in industrial components. It processes images in real time and produces detailed reports, drastically reducing manual inspection time."
+          },
+          { "type": "h3", "text": "System architecture" },
+          {
+            "type": "ul",
+            "items": [
+              "API gateway built on Spring Cloud Gateway",
+              "Java 17 microservices with Spring Boot 3",
+              "React frontend with TypeScript and Redux",
+              "PostgreSQL on AWS RDS",
+              "Image storage on S3",
+              "Computer vision models for defect detection"
+            ]
+          },
+          { "type": "h3", "text": "Technical challenges" },
+          {
+            "type": "p",
+            "text": "The main challenge was optimising the processing of high-resolution images. A RabbitMQ queue with asynchronous processing made it possible to scale the AI workers horizontally."
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Sample figure: the system processes more than 10,000 images a day with 98.5% defect-detection accuracy."
+          },
+          { "type": "h3", "text": "Results" },
+          {
+            "type": "p",
+            "text": "Deployed at three industrial plants, handling an average of 2,500 components a day with a mean response time of 300 ms per image."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "iot-rural-cloud-platform",
+    "type": "iot",
+    "tech": ["Node.js", "AWS Lambda", "DynamoDB", "React", "WebSockets", "IoT Core"],
+    "year": 2024,
+    "featured": true,
+    "coverImage": "images/projects/iot-cover.svg",
+    "repoUrl": "https://github.com/your-username/iot-rural",
+    "demoUrl": null,
+    "gallery": [],
+    "translations": {
+      "es": {
+        "title": "IoT Rural Cloud Platform",
+        "excerpt": "Plataforma cloud para monitorizar sensores IoT en zonas rurales. Arquitectura serverless en AWS con panel React en tiempo real.",
+        "highlights": [
+          "Arquitectura 100% serverless en AWS",
+          "Más de 500 sensores conectados de forma simultánea",
+          "Panel en tiempo real con WebSockets",
+          "Alertas automáticas configurables"
+        ],
+        "content": [
+          { "type": "h2", "text": "Descripción" },
+          {
+            "type": "p",
+            "text": "Plataforma diseñada para monitorizar sensores IoT desplegados en zonas rurales sin conectividad constante. Recoge datos de temperatura, humedad y nivel de agua, los procesa en tiempo real y genera alertas automáticas."
+          },
+          { "type": "h3", "text": "Stack tecnológico" },
+          {
+            "type": "ul",
+            "items": [
+              "AWS IoT Core para la gestión de dispositivos",
+              "AWS Lambda para el procesamiento serverless",
+              "DynamoDB como almacenamiento NoSQL",
+              "API Gateway con WebSockets para el tiempo real",
+              "React y Chart.js para la visualización",
+              "CloudWatch para métricas y alarmas"
+            ]
+          },
+          { "type": "h3", "text": "Aprendizajes clave" },
+          {
+            "type": "p",
+            "text": "El enfoque serverless redujo los costes operativos un 70% frente a servidores tradicionales. El mayor reto fue la conectividad intermitente de los sensores, resuelto con una cola y reintentos con retroceso exponencial."
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Dato de ejemplo: la plataforma ha procesado más de 15 millones de lecturas con una disponibilidad del 99,9%."
+          }
+        ]
+      },
+      "en": {
+        "title": "IoT Rural Cloud Platform",
+        "excerpt": "Cloud platform for monitoring IoT sensors in rural areas. Serverless architecture on AWS with a real-time React dashboard.",
+        "highlights": [
+          "100% serverless architecture on AWS",
+          "More than 500 sensors connected simultaneously",
+          "Real-time dashboard powered by WebSockets",
+          "Configurable automatic alerts"
+        ],
+        "content": [
+          { "type": "h2", "text": "Overview" },
+          {
+            "type": "p",
+            "text": "A platform designed to monitor IoT sensors deployed in rural areas without constant connectivity. It collects temperature, humidity and water-level data, processes it in real time and raises automatic alerts."
+          },
+          { "type": "h3", "text": "Tech stack" },
+          {
+            "type": "ul",
+            "items": [
+              "AWS IoT Core for device management",
+              "AWS Lambda for serverless processing",
+              "DynamoDB as the NoSQL store",
+              "API Gateway with WebSockets for real time",
+              "React and Chart.js for visualisation",
+              "CloudWatch for metrics and alarms"
+            ]
+          },
+          { "type": "h3", "text": "Key learnings" },
+          {
+            "type": "p",
+            "text": "The serverless approach cut operating costs by 70% compared with traditional servers. The biggest challenge was the sensors' intermittent connectivity, solved with a queue and exponential-backoff retries."
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Sample figure: the platform has processed more than 15 million readings with 99.9% availability."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "lumi-bot-virtual-assistant",
+    "type": "backend",
+    "tech": ["n8n", "Node.js", "OpenAI API", "PostgreSQL", "Webhooks"],
+    "year": 2024,
+    "featured": true,
+    "coverImage": "images/projects/lumi-cover.svg",
+    "repoUrl": "https://github.com/your-username/lumi-bot",
+    "demoUrl": "https://example.com/lumi-demo",
+    "gallery": ["images/projects/lumi-workflow.svg"],
+    "translations": {
+      "es": {
+        "title": "Lumi Bot — Asistente virtual con n8n",
+        "excerpt": "Bot conversacional construido con n8n para automatizar tareas de empresa. Integra IA generativa y múltiples APIs.",
+        "highlights": [
+          "Automatización de más de 20 procesos internos",
+          "Integración con Slack, Gmail y Google Calendar",
+          "Procesamiento de lenguaje natural con OpenAI",
+          "60% menos tiempo en tareas repetitivas"
+        ],
+        "galleryAlts": ["Flujo de trabajo de n8n que enruta mensajes de Slack hacia OpenAI"],
+        "content": [
+          { "type": "h2", "text": "Visión general" },
+          {
+            "type": "p",
+            "text": "Lumi Bot es un asistente virtual pensado para automatizar flujos de trabajo empresariales complejos. Usa n8n como orquestador y se integra con varios servicios mediante webhooks y APIs REST."
+          },
+          { "type": "h3", "text": "Características principales" },
+          {
+            "type": "ul",
+            "items": [
+              "Procesamiento de lenguaje natural con GPT-4",
+              "Respuestas automáticas a correos frecuentes",
+              "Gestión automática de reuniones y calendario",
+              "Generación de informes semanales",
+              "Notificaciones inteligentes"
+            ]
+          },
+          { "type": "h3", "text": "Arquitectura" },
+          {
+            "type": "p",
+            "text": "Los webhooks reciben eventos de Slack y del correo, el texto se procesa con OpenAI y n8n ejecuta las acciones correspondientes según el contexto."
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Importante: el bot requiere configurar con cuidado los permisos OAuth de cada servicio integrado."
+          }
+        ]
+      },
+      "en": {
+        "title": "Lumi Bot — n8n Virtual Assistant",
+        "excerpt": "Conversational bot built with n8n to automate business tasks. Integrates generative AI and multiple APIs.",
+        "highlights": [
+          "Automates more than 20 internal processes",
+          "Integrations with Slack, Gmail and Google Calendar",
+          "Natural language processing with OpenAI",
+          "60% less time spent on repetitive tasks"
+        ],
+        "galleryAlts": ["n8n workflow routing Slack messages to OpenAI"],
+        "content": [
+          { "type": "h2", "text": "Overview" },
+          {
+            "type": "p",
+            "text": "Lumi Bot is a virtual assistant designed to automate complex business workflows. It uses n8n as the orchestrator and integrates with several services through webhooks and REST APIs."
+          },
+          { "type": "h3", "text": "Main features" },
+          {
+            "type": "ul",
+            "items": [
+              "Natural language processing with GPT-4",
+              "Automatic replies to common emails",
+              "Automatic meeting and calendar management",
+              "Weekly report generation",
+              "Smart notifications"
+            ]
+          },
+          { "type": "h3", "text": "Architecture" },
+          {
+            "type": "p",
+            "text": "Webhooks receive events from Slack and email, the text is processed with OpenAI, and n8n runs the matching actions based on context."
+          },
+          {
+            "type": "callout",
+            "variant": "warning",
+            "text": "Important: the bot requires careful configuration of the OAuth permissions for every integrated service."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "atlas-ui-component-library",
+    "type": "frontend",
+    "tech": ["React", "TypeScript", "Storybook", "Tailwind CSS", "Vitest"],
+    "year": 2023,
+    "featured": false,
+    "coverImage": "images/projects/atlas-cover.svg",
+    "repoUrl": "https://github.com/your-username/atlas-ui",
+    "demoUrl": "https://example.com/atlas-storybook",
+    "gallery": ["images/projects/atlas-components.svg", "images/projects/atlas-tokens.svg"],
+    "translations": {
+      "es": {
+        "title": "Atlas UI — Librería de componentes",
+        "excerpt": "Sistema de diseño accesible en React y TypeScript con tokens de diseño, documentación en Storybook y pruebas automáticas.",
+        "highlights": [
+          "Más de 40 componentes accesibles (WCAG 2.1 AA)",
+          "Tokens de diseño compartidos entre web y documentación",
+          "Cobertura de pruebas superior al 90%",
+          "Publicación automática de versiones con changesets"
+        ],
+        "galleryAlts": [
+          "Catálogo de componentes en Storybook",
+          "Tabla de tokens de color y tipografía"
+        ],
+        "content": [
+          { "type": "h2", "text": "Por qué existe" },
+          {
+            "type": "p",
+            "text": "Tres equipos mantenían botones, formularios y modales distintos. Atlas UI unifica la interfaz, reduce el trabajo duplicado y garantiza accesibilidad por defecto."
+          },
+          { "type": "h3", "text": "Decisiones de diseño" },
+          {
+            "type": "ul",
+            "items": [
+              "Componentes sin estilos acoplados: la apariencia sale de tokens",
+              "Composición antes que configuración con decenas de props",
+              "Pruebas de accesibilidad automáticas en cada pull request",
+              "Versionado semántico y registro de cambios generado"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "tsx",
+            "text": "<Button variant=\"primary\" size=\"md\" onClick={save}>\n  Guardar\n</Button>"
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Dato de ejemplo: la adopción redujo un 35% el tiempo de maquetación de nuevas pantallas."
+          }
+        ]
+      },
+      "en": {
+        "title": "Atlas UI — Component Library",
+        "excerpt": "Accessible design system in React and TypeScript with design tokens, Storybook documentation and automated tests.",
+        "highlights": [
+          "40+ accessible components (WCAG 2.1 AA)",
+          "Design tokens shared between the web app and the docs",
+          "Test coverage above 90%",
+          "Automated releases with changesets"
+        ],
+        "galleryAlts": ["Component catalogue in Storybook", "Colour and typography token table"],
+        "content": [
+          { "type": "h2", "text": "Why it exists" },
+          {
+            "type": "p",
+            "text": "Three teams were maintaining different buttons, forms and modals. Atlas UI unifies the interface, removes duplicated work and makes accessibility the default."
+          },
+          { "type": "h3", "text": "Design decisions" },
+          {
+            "type": "ul",
+            "items": [
+              "Components carry no coupled styles: appearance comes from tokens",
+              "Composition over configuration with dozens of props",
+              "Automated accessibility checks on every pull request",
+              "Semantic versioning with a generated changelog"
+            ]
+          },
+          {
+            "type": "code",
+            "language": "tsx",
+            "text": "<Button variant=\"primary\" size=\"md\" onClick={save}>\n  Save\n</Button>"
+          },
+          {
+            "type": "callout",
+            "variant": "success",
+            "text": "Sample figure: adoption cut the time to build new screens by 35%."
+          }
+        ]
+      }
+    }
+  },
+  {
+    "slug": "crop-disease-classifier",
+    "type": "ml",
+    "tech": ["Python", "PyTorch", "FastAPI", "ONNX", "Docker"],
+    "year": 2023,
+    "featured": false,
+    "coverImage": "images/projects/crop-cover.svg",
+    "repoUrl": "https://github.com/your-username/crop-disease-classifier",
+    "demoUrl": null,
+    "gallery": [],
+    "translations": {
+      "es": {
+        "title": "Clasificador de enfermedades en cultivos",
+        "excerpt": "Modelo de visión por computador que identifica enfermedades en hojas a partir de una foto, servido con FastAPI y exportado a ONNX.",
+        "highlights": [
+          "Precisión del 94% sobre un conjunto de validación propio",
+          "Inferencia en menos de 80 ms en CPU gracias a ONNX",
+          "API documentada con OpenAPI",
+          "Imagen Docker de menos de 300 MB"
+        ],
+        "content": [
+          { "type": "h2", "text": "Objetivo" },
+          {
+            "type": "p",
+            "text": "Dar a pequeños agricultores una forma rápida de detectar enfermedades comunes con solo fotografiar una hoja, sin depender de conexión constante."
+          },
+          { "type": "h3", "text": "Enfoque" },
+          {
+            "type": "ul",
+            "items": [
+              "Transfer learning sobre una red convolucional preentrenada",
+              "Aumento de datos para simular distintas condiciones de luz",
+              "Exportación a ONNX para una inferencia ligera",
+              "API FastAPI con validación estricta de las imágenes recibidas"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Proyecto de ejemplo con fines demostrativos: las métricas son ilustrativas."
+          }
+        ]
+      },
+      "en": {
+        "title": "Crop Disease Classifier",
+        "excerpt": "Computer vision model that identifies leaf diseases from a photo, served with FastAPI and exported to ONNX.",
+        "highlights": [
+          "94% accuracy on a custom validation set",
+          "Inference under 80 ms on CPU thanks to ONNX",
+          "API documented with OpenAPI",
+          "Docker image under 300 MB"
+        ],
+        "content": [
+          { "type": "h2", "text": "Goal" },
+          {
+            "type": "p",
+            "text": "Give small-scale farmers a quick way to detect common diseases by photographing a leaf, without relying on a constant connection."
+          },
+          { "type": "h3", "text": "Approach" },
+          {
+            "type": "ul",
+            "items": [
+              "Transfer learning on a pretrained convolutional network",
+              "Data augmentation to simulate different lighting conditions",
+              "ONNX export for lightweight inference",
+              "FastAPI service with strict validation of uploaded images"
+            ]
+          },
+          {
+            "type": "callout",
+            "variant": "info",
+            "text": "Demonstration project: the metrics are illustrative."
+          }
+        ]
+      }
+    }
+  }
+]

@@ -1,0 +1,59 @@
+{
+  "name": "Your Name",
+  "links": {
+    "github": "https://github.com/your-username",
+    "linkedin": "https://www.linkedin.com/in/your-profile",
+    "email": "you@example.com"
+  },
+  "skills": {
+    "frontend": ["React", "Next.js", "TypeScript", "Tailwind CSS", "Redux", "Vite"],
+    "backend": ["Java", "Spring Boot", "Spring WebFlux", "Node.js", "Express", "PostgreSQL"],
+    "devops": ["CI/CD", "Docker", "Kubernetes", "AWS", "GitHub Actions", "Cloudflare", "Jenkins"],
+    "dataAi": ["MongoDB", "Redis", "n8n", "OpenAI API", "Computer Vision", "PyTorch"]
+  },
+  "certifications": [
+    "AWS Certified Solutions Architect",
+    "Oracle Certified Java Developer",
+    "Spring Professional Certification"
+  ],
+  "timeline": [
+    {
+      "year": 2025,
+      "event": {
+        "es": "SIVIA: sistema de inspección visual con IA en producción",
+        "en": "SIVIA: AI visual inspection system reaches production"
+      }
+    },
+    {
+      "year": 2024,
+      "event": {
+        "es": "IoT Rural Cloud Platform: arquitectura serverless en AWS",
+        "en": "IoT Rural Cloud Platform: serverless architecture on AWS"
+      }
+    },
+    {
+      "year": 2024,
+      "event": {
+        "es": "Lumi Bot: automatización de procesos con n8n",
+        "en": "Lumi Bot: process automation with n8n"
+      }
+    },
+    {
+      "year": 2023,
+      "event": {
+        "es": "Certificación AWS Solutions Architect y lanzamiento de Atlas UI",
+        "en": "AWS Solutions Architect certification and Atlas UI launch"
+      }
+    }
+  ],
+  "translations": {
+    "es": {
+      "tagline": "Full-stack • Java + Spring • React/Next • DevSecOps",
+      "bio": "Construyo software claro, escalable y medible. Me especializo en arquitecturas cloud-native y sistemas distribuidos que resuelven problemas reales. Mi enfoque combina ingeniería de software sólida con DevOps moderno para entregar valor de forma continua."
+    },
+    "en": {
+      "tagline": "Full-stack • Java + Spring • React/Next • DevSecOps",
+      "bio": "I build clear, scalable and measurable software. I specialise in cloud-native architectures and distributed systems that solve real problems. My approach combines solid software engineering with modern DevOps to deliver value continuously."
+    }
+  }
+}
