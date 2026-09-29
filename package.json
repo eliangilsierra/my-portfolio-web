@@ -1,6 +1,6 @@
 {
   "name": "my-portfolio-web",
-  "version": "0.2.0",
+  "version": "0.3.0",
   "description": "A bilingual (ES/EN), JSON-driven developer portfolio built with React, TypeScript and Tailwind CSS.",
   "private": true,
   "license": "MIT",
