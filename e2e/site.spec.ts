@@ -102,6 +102,38 @@ test.describe('language', () => {
   });
 });
 
+test.describe('motion', () => {
+  test('the WebGL field wakes on the first mouse movement, and never on a phone', async ({
+    page,
+    isMobile,
+  }) => {
+    await page.goto('en/');
+    await page.waitForLoadState('networkidle');
+    await expect(page.locator('canvas[data-ready]')).toHaveCount(0);
+
+    if (isMobile) return;
+    await page.mouse.move(400, 300);
+    await page.mouse.move(420, 320);
+
+    await expect(page.locator('canvas[data-ready="true"]')).toHaveCount(1, { timeout: 10_000 });
+  });
+
+  test.describe('reduced motion', () => {
+    test.use({ reducedMotion: 'reduce' });
+
+    test('skips the WebGL field and shows every section without scrolling', async ({ page }) => {
+      await page.goto('en/');
+      await page.waitForLoadState('networkidle');
+
+      await expect(page.locator('canvas[data-ready]')).toHaveCount(0);
+      // Content far below the fold is fully drawn, not waiting for a scroll reveal.
+      const notes = page.getByRole('heading', { name: 'Latest posts' });
+      await expect(notes).toHaveCSS('opacity', '1');
+      await expect(page.locator('[data-cap-skill]').first()).toHaveCSS('opacity', '1');
+    });
+  });
+});
+
 test.describe('theme', () => {
   test.use({ colorScheme: 'dark' });
 
@@ -150,6 +182,23 @@ test.describe('interaction', () => {
 
     await expect(page.getByRole('heading', { name: 'Crop Disease Classifier' })).toBeVisible();
     await expect(page.getByRole('heading', { name: 'IoT Rural Cloud Platform' })).toHaveCount(0);
+  });
+
+  test('the mobile menu takes focus, and Escape closes it and returns focus', async ({
+    page,
+    isMobile,
+  }) => {
+    test.skip(!isMobile, 'The menu only exists on small screens.');
+    await page.goto('en/');
+
+    const toggle = page.getByRole('button', { name: /toggle menu/i });
+    await toggle.click();
+    const menu = page.locator('#mobile-menu');
+    await expect(menu.getByRole('link', { name: 'Home' })).toBeFocused();
+
+    await page.keyboard.press('Escape');
+    await expect(menu).toHaveCount(0);
+    await expect(toggle).toBeFocused();
   });
 
   test('the skip link is the first thing a keyboard user reaches', async ({ page }) => {
