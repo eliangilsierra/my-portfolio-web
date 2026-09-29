@@ -1,0 +1,29 @@
+{
+  "ci": {
+    "collect": {
+      "startServerCommand": "node scripts/preview.mjs",
+      "startServerReadyPattern": "GitHub Pages semantics",
+      "url": [
+        "http://localhost:4173/my-portfolio-web/en/",
+        "http://localhost:4173/my-portfolio-web/es/projects/",
+        "http://localhost:4173/my-portfolio-web/en/pills/flyway-idempotent-inserts/"
+      ],
+      "numberOfRuns": 3,
+      "settings": {
+        "chromeFlags": "--no-sandbox --headless=new"
+      }
+    },
+    "assert": {
+      "assertions": {
+        "categories:performance": ["error", { "minScore": 0.85 }],
+        "categories:accessibility": ["error", { "minScore": 1 }],
+        "categories:best-practices": ["error", { "minScore": 0.95 }],
+        "categories:seo": ["error", { "minScore": 1 }]
+      }
+    },
+    "upload": {
+      "target": "filesystem",
+      "outputDir": ".lighthouseci"
+    }
+  }
+}
