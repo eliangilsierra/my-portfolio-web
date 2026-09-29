@@ -2,9 +2,14 @@
 node_modules
 
 # Build output
+build
 dist
 dist-ssr
 coverage
+.react-router
+playwright-report
+test-results
+.lighthouseci
 *.tsbuildinfo
 
 # Environment
