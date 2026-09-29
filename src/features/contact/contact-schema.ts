@@ -15,8 +15,8 @@ export function createContactSchema(messages: ValidationMessages) {
     email: z
       .string()
       .trim()
-      .email(messages.emailInvalid)
-      .max(CONTACT.emailMaxLength, messages.emailMax(CONTACT.emailMaxLength)),
+      .max(CONTACT.emailMaxLength, messages.emailMax(CONTACT.emailMaxLength))
+      .pipe(z.email(messages.emailInvalid)),
     message: z
       .string()
       .trim()
@@ -25,4 +25,12 @@ export function createContactSchema(messages: ValidationMessages) {
   });
 }
 
-export type ContactMessage = z.infer<ReturnType<typeof createContactSchema>>;
+export type ContactSchema = ReturnType<typeof createContactSchema>;
+export type ContactInput = z.infer<ContactSchema>;
+export type ContactField = keyof ContactInput;
+
+export const CONTACT_FIELDS = [
+  'name',
+  'email',
+  'message',
+] as const satisfies readonly ContactField[];
