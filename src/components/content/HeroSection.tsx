@@ -5,8 +5,8 @@ import { cn } from '@/lib/utils';
 import { SectionBadge, type BadgeTone } from './SectionBadge';
 
 const BACKGROUNDS = {
-  brand: 'bg-gradient-to-br from-brand/10 via-background to-accent/10',
-  accent: 'bg-gradient-to-br from-accent/10 via-background to-brand/10',
+  brand: 'bg-linear-to-br from-brand/10 via-background to-accent/10',
+  accent: 'bg-linear-to-br from-accent/10 via-background to-brand/10',
   muted: 'bg-secondary/30',
 } as const;
 

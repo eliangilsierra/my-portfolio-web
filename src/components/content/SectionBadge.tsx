@@ -4,7 +4,7 @@ import { cn } from '@/lib/utils';
 
 const TONES = {
   brand: 'bg-brand/10 text-brand',
-  accent: 'bg-accent/10 text-accent',
+  accent: 'bg-accent/10 text-accent-text',
 } as const;
 
 export type BadgeTone = keyof typeof TONES;

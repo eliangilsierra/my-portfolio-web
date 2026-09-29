@@ -1,9 +1,8 @@
 import { AlertTriangle, CheckCircle2, Info } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui/alert';
-import type { ContentBlock } from '@/content/types';
+import type { CalloutVariant, ContentBlock } from '@/domain/content-block';
+import { useI18n } from '@/i18n/useI18n';
 import { cn } from '@/lib/utils';
-
-type CalloutVariant = Extract<ContentBlock, { type: 'callout' }>['variant'];
 
 const CALLOUT_ICONS: Record<CalloutVariant, typeof Info> = {
   info: Info,
@@ -21,15 +20,15 @@ function assertNever(block: never): never {
   throw new Error(`Unsupported content block: ${JSON.stringify(block)}`);
 }
 
-function Block({ block }: { block: ContentBlock }) {
+function Block({ block, codeLabel }: { block: ContentBlock; codeLabel: string }) {
   switch (block.type) {
     case 'h2':
       return (
-        <h2 className="mb-4 mt-12 font-heading text-3xl font-bold first:mt-0">{block.text}</h2>
+        <h2 className="mt-12 mb-4 font-heading text-3xl font-bold first:mt-0">{block.text}</h2>
       );
 
     case 'h3':
-      return <h3 className="mb-3 mt-8 font-heading text-2xl font-semibold">{block.text}</h3>;
+      return <h3 className="mt-8 mb-3 font-heading text-2xl font-semibold">{block.text}</h3>;
 
     case 'p':
       return <p className="text-base leading-relaxed text-foreground/90">{block.text}</p>;
@@ -59,7 +58,13 @@ function Block({ block }: { block: ContentBlock }) {
 
     case 'code':
       return (
-        <pre className="my-6 overflow-x-auto rounded-xl border border-border bg-secondary/50 p-4">
+        // Long lines scroll sideways, so the block must be reachable (and scrollable) by keyboard.
+        <pre
+          role="group"
+          aria-label={codeLabel}
+          tabIndex={0}
+          className="my-6 overflow-x-auto rounded-xl border border-border bg-secondary/50 p-4 focus-ring"
+        >
           <code className="font-mono text-sm" data-language={block.language}>
             {block.text}
           </code>
@@ -77,10 +82,12 @@ interface ContentRendererProps {
 
 /** Renders structured content blocks. Text is rendered as React text, never as HTML. */
 export function ContentRenderer({ content }: ContentRendererProps) {
+  const { t } = useI18n();
+
   return (
     <div className="max-w-none space-y-6">
       {content.map((block, index) => (
-        <Block key={`${block.type}-${index}`} block={block} />
+        <Block key={`${block.type}-${index}`} block={block} codeLabel={t.a11y.codeExample} />
       ))}
     </div>
   );

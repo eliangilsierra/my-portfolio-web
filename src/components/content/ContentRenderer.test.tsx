@@ -1,5 +1,6 @@
-import { render, screen } from '@testing-library/react';
-import type { ContentBlock } from '@/content/types';
+import { screen } from '@testing-library/react';
+import type { ContentBlock } from '@/domain/content-block';
+import { renderWithProviders } from '@/test/render';
 import { ContentRenderer } from './ContentRenderer';
 
 const blocks: ContentBlock[] = [
@@ -13,7 +14,7 @@ const blocks: ContentBlock[] = [
 
 describe('ContentRenderer', () => {
   it('renders every block type', () => {
-    render(<ContentRenderer content={blocks} />);
+    renderWithProviders(<ContentRenderer content={blocks} />);
 
     expect(screen.getByRole('heading', { level: 2, name: 'Heading two' })).toBeInTheDocument();
     expect(screen.getByRole('heading', { level: 3, name: 'Heading three' })).toBeInTheDocument();
@@ -23,10 +24,46 @@ describe('ContentRenderer', () => {
     expect(screen.getByText('const a = 1;')).toHaveAttribute('data-language', 'ts');
   });
 
+  it('makes code blocks focusable, labelled groups so keyboard users can scroll them', () => {
+    renderWithProviders(<ContentRenderer content={[{ type: 'code', text: 'const a = 1;' }]} />, {
+      locale: 'es',
+    });
+
+    const block = screen.getByRole('group', { name: 'Ejemplo de código' });
+    expect(block).toHaveAttribute('tabindex', '0');
+    expect(block).toHaveTextContent('const a = 1;');
+  });
+
   it('renders markup in text as plain text', () => {
-    render(<ContentRenderer content={[{ type: 'p', text: '<img src=x onerror=alert(1)>' }]} />);
+    renderWithProviders(
+      <ContentRenderer content={[{ type: 'p', text: '<img src=x onerror=alert(1)>' }]} />,
+    );
 
     expect(screen.getByText('<img src=x onerror=alert(1)>')).toBeInTheDocument();
     expect(document.querySelector('img')).toBeNull();
+  });
+
+  it('renders every callout variant', () => {
+    renderWithProviders(
+      <ContentRenderer
+        content={[
+          { type: 'callout', variant: 'info', text: 'Info note' },
+          { type: 'callout', variant: 'warning', text: 'Warning note' },
+          { type: 'callout', variant: 'success', text: 'Success note' },
+        ]}
+      />,
+    );
+
+    expect(screen.getAllByRole('alert')).toHaveLength(3);
+  });
+
+  it('fails loudly on a block type it does not know', () => {
+    vi.spyOn(console, 'error').mockImplementation(() => undefined);
+    const unknown = [{ type: 'video', text: 'x' }] as unknown as ContentBlock[];
+
+    expect(() => renderWithProviders(<ContentRenderer content={unknown} />)).toThrow(
+      /Unsupported content block/,
+    );
+    vi.restoreAllMocks();
   });
 });
