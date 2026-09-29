@@ -35,6 +35,7 @@ export const es: Dictionary = {
     skipToContent: 'Saltar al contenido',
     mainNavigation: 'Navegación principal',
     toggleMenu: 'Abrir o cerrar el menú',
+    closeMenu: 'Cerrar el menú',
     switchToDark: 'Cambiar a modo oscuro',
     switchToLight: 'Cambiar a modo claro',
     changeLanguage: 'Cambiar idioma',
@@ -53,11 +54,19 @@ export const es: Dictionary = {
     contact: 'Contacto',
   },
 
+  sheet: {
+    label: 'Lámina',
+    revision: 'Rev.',
+    endOfSheet: 'Fin de la lámina',
+    scroll: 'Desliza',
+  },
+
   footer: {
     quickLinks: 'Enlaces rápidos',
     connect: 'Conéctate',
     copyright: (year, name) => `© ${year} ${name}. Todos los derechos reservados.`,
     builtWith: 'Hecho con React, TypeScript y Tailwind CSS.',
+    backToTop: 'Volver arriba',
   },
 
   common: {
@@ -82,17 +91,29 @@ export const es: Dictionary = {
     viewProjects: 'Ver proyectos',
     contactMe: 'Contactar',
     featured: {
-      badge: 'Proyectos destacados',
+      badge: 'Trabajo seleccionado',
       title: 'Últimos trabajos',
       description:
         'Una selección de proyectos que reflejan mi experiencia en desarrollo full-stack.',
       viewAll: 'Ver todos los proyectos',
+    },
+    capabilities: {
+      badge: 'Capacidades',
+      title: 'De la interfaz a la infraestructura',
+      description:
+        'Las herramientas con las que trabajo, agrupadas por la capa del sistema a la que sirven.',
     },
     latest: {
       badge: 'Píldoras de conocimiento',
       title: 'Últimas publicaciones',
       description: 'Reflexiones, aprendizajes y soluciones técnicas del día a día.',
       viewAll: 'Ver todas las píldoras',
+    },
+    closing: {
+      badge: 'Siguiente paso',
+      title: 'Construyamos algo',
+      cta: 'Empezar una conversación',
+      email: 'Escríbeme un correo',
     },
   },
 
@@ -107,6 +128,15 @@ export const es: Dictionary = {
     techStack: 'Stack tecnológico',
     highlights: 'Destacados',
     gallery: 'Galería',
+    details: 'Datos del proyecto',
+    type: 'Tipo',
+    year: 'Año',
+    links: 'Enlaces',
+    figure: 'Fig.',
+    caseStudy: 'Caso de estudio',
+    adjacent: 'Más proyectos',
+    previous: 'Proyecto anterior',
+    next: 'Proyecto siguiente',
   },
 
   pills: {
@@ -119,20 +149,35 @@ export const es: Dictionary = {
     newer: 'Más reciente',
     older: 'Más antigua',
     tags: 'Etiquetas',
+    contents: 'Contenido',
+    adjacent: 'Más píldoras',
   },
 
   about: {
     badge: 'Perfil',
     title: 'Sobre mí',
+    approach: 'Enfoque',
     skills: 'Habilidades',
+    skillsDescription: 'Agrupadas por la capa del sistema a la que sirven.',
     certifications: 'Certificaciones',
     timeline: 'Trayectoria',
+    timelineColumns: {
+      revision: 'Rev.',
+      year: 'Año',
+      change: 'Cambio',
+    },
     skillGroups: {
       frontend: 'Frontend',
       backend: 'Backend',
       devops: 'DevOps',
       dataAi: 'Datos e IA',
     },
+  },
+
+  callouts: {
+    info: 'Nota',
+    warning: 'Atención',
+    success: 'Resultado',
   },
 
   search: {
@@ -145,6 +190,8 @@ export const es: Dictionary = {
     title: 'Hablemos',
     description:
       '¿Tienes un proyecto en mente? Estoy disponible para colaboraciones y oportunidades.',
+    channels: 'Canales directos',
+    formTitle: 'Envía un mensaje',
     form: {
       name: 'Nombre',
       namePlaceholder: 'Tu nombre',

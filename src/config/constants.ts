@@ -12,13 +12,20 @@ export const PROJECT_CARD = {
 export const HEADER = {
   /** Vertical scroll (px) after which the header switches to its elevated style. */
   scrolledThreshold: 20,
+  /** Scrolling down further than this (px) tucks the header away until the visitor scrolls up. */
+  hideAfter: 320,
 } as const;
 
-export const MOTION = {
-  /** Delay (s) between consecutive cards in a grid. */
-  staggerStep: 0.1,
-  /** Cards beyond this index reveal without additional delay so long lists do not feel slow. */
-  maxStaggerIndex: 6,
+/**
+ * Every page is a numbered sheet of the same drawing set. The numbers follow the navigation order,
+ * so the header, the page titles and the footer index agree.
+ */
+export const SHEETS = {
+  home: '00',
+  projects: '01',
+  pills: '02',
+  about: '03',
+  contact: '04',
 } as const;
 
 export const CONTACT = {
