@@ -22,7 +22,6 @@ export const MOTION = {
 } as const;
 
 export const CONTACT = {
-  successMessageDurationMs: 5000,
   mockLatencyMs: 800,
   nameMinLength: 2,
   nameMaxLength: 100,

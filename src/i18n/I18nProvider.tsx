@@ -1,37 +1,16 @@
-import { useCallback, useEffect, useMemo, useState, type ReactNode } from 'react';
-import { SITE } from '@/config/site';
+import { useMemo, type ReactNode } from 'react';
+import type { Locale } from '@/domain/locale';
 import { dictionaries } from './dictionaries';
 import { I18nContext, type I18nContextValue } from './I18nContext';
-import { detectInitialLocale, type Locale } from './locale';
 
 interface I18nProviderProps {
   children: ReactNode;
-  /** Forces a locale (used by tests); otherwise detected from storage and the browser. */
-  initialLocale?: Locale;
+  locale: Locale;
 }
 
-export function I18nProvider({ children, initialLocale }: I18nProviderProps) {
-  const [locale, setLocaleState] = useState<Locale>(
-    () => initialLocale ?? detectInitialLocale(SITE.localeStorageKey),
-  );
-
-  useEffect(() => {
-    document.documentElement.lang = locale;
-  }, [locale]);
-
-  const setLocale = useCallback((next: Locale) => {
-    setLocaleState(next);
-    try {
-      window.localStorage.setItem(SITE.localeStorageKey, next);
-    } catch {
-      // Persisting the preference is best effort.
-    }
-  }, []);
-
-  const value = useMemo<I18nContextValue>(
-    () => ({ locale, setLocale, t: dictionaries[locale] }),
-    [locale, setLocale],
-  );
+/** Provides the dictionary for a locale. The locale itself is decided by the URL, not by state. */
+export function I18nProvider({ children, locale }: I18nProviderProps) {
+  const value = useMemo<I18nContextValue>(() => ({ locale, t: dictionaries[locale] }), [locale]);
 
   return <I18nContext.Provider value={value}>{children}</I18nContext.Provider>;
 }
